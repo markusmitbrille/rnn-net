@@ -70,6 +70,8 @@ namespace Autrage.RNN.NET
 
         public void Replicate(T intelligence)
         {
+            if (!intelligences.Contains(intelligence)) return;
+
             T replica = new T();
             replica.ReplicateGenome(intelligence,
                 mutationChance,
