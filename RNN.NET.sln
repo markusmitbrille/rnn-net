@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RNN.NET", "RNN.NET\RNN.NET.csproj", "{847D91FF-63F3-4E7B-A9BB-2288D2C83825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{010F74D2-3DAE-4232-8015-3768309FEFE7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{847D91FF-63F3-4E7B-A9BB-2288D2C83825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{847D91FF-63F3-4E7B-A9BB-2288D2C83825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{847D91FF-63F3-4E7B-A9BB-2288D2C83825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{847D91FF-63F3-4E7B-A9BB-2288D2C83825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{010F74D2-3DAE-4232-8015-3768309FEFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{010F74D2-3DAE-4232-8015-3768309FEFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{010F74D2-3DAE-4232-8015-3768309FEFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{010F74D2-3DAE-4232-8015-3768309FEFE7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C4A6AC77-A369-40DC-AFA1-A93078DD62F4}
+	EndGlobalSection
+EndGlobal
