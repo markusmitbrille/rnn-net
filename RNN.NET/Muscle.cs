@@ -8,8 +8,6 @@ namespace Autrage.RNN.NET
     {
         public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
 
-        double IStimuland.Stimulus => throw new NotSupportedException("Muscles represent network endpoints, their stimuli should never be used!");
-
         public Muscle()
         {
         }

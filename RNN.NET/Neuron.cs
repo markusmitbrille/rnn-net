@@ -5,7 +5,7 @@ namespace Autrage.RNN.NET
 {
     abstract class Neuron : INeuron
     {
-        public double Stimulus { get; private set; }
+        private double Stimulus { get; set; }
         public double State { get; private set; }
 
         public double Bias { get; set; }

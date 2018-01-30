@@ -7,7 +7,6 @@ namespace Autrage.RNN.NET
     {
         IList<ISynapse> Synapses { get; }
 
-        double Stimulus { get; }
         void Stimulate();
     }
 }
