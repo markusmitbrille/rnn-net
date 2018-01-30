@@ -52,20 +52,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Emitter.cs" />
-    <Compile Include="Genome.cs" />
-    <Compile Include="IGene.cs" />
-    <Compile Include="IGenome.cs" />
     <Compile Include="INeuralLayer.cs" />
-    <Compile Include="INeuralNetwork.cs" />
     <Compile Include="INeuron.cs" />
-    <Compile Include="Intelligence.cs" />
     <Compile Include="IStimuland.cs" />
     <Compile Include="IStimulator.cs" />
     <Compile Include="ISynapse.cs" />
     <Compile Include="NeuralLayer.cs" />
     <Compile Include="NeuralNetwork.cs" />
-    <Compile Include="NeuralNetworkGene.cs" />
-    <Compile Include="NeuralNetworkGenome.cs" />
     <Compile Include="Neuron.cs" />
     <Compile Include="Perceptron.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

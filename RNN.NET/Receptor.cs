@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Autrage.RNN.NET
 {
-    public sealed class Receptor : IStimuland
+    class Receptor : IStimuland
     {
         public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
 

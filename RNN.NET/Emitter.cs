@@ -2,7 +2,7 @@
 
 namespace Autrage.RNN.NET
 {
-    public sealed class Emitter : IStimulator
+    class Emitter : IStimulator
     {
         private double state;
         public double State => state;

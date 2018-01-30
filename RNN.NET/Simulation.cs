@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Autrage.RNN.NET
 {
-    public sealed class Simulation<T> : IEnumerable<T> where T : Intelligence, new()
+    public sealed class Simulation
     {
-        private class ReferenceEqualityComparer : IEqualityComparer<T>
+        private class ReferenceEqualityComparer : IEqualityComparer<object>
         {
-            public bool Equals(T x, T y) => ReferenceEquals(x, y);
+            public new bool Equals(object x, object y) => ReferenceEquals(x, y);
 
-            public int GetHashCode(T obj) => obj?.GetHashCode() ?? 0;
+            public int GetHashCode(object obj) => obj?.GetHashCode() ?? 0;
         }
 
-        private ISet<T> intelligences = new HashSet<T>(new ReferenceEqualityComparer());
+        private ISet<NeuralNetwork> brains = new HashSet<NeuralNetwork>(new ReferenceEqualityComparer());
 
         private int order;
         private int complexity;
@@ -52,53 +52,21 @@ namespace Autrage.RNN.NET
         {
             for (int i = 0; i < order; i++)
             {
-                Generate(complexity);
+                brains.Add(new NeuralNetwork(complexity));
             }
-        }
-
-        public bool Add(T intelligence) => intelligences.Add(intelligence);
-        public bool Remove(T intelligence) => intelligences.Remove(intelligence);
-
-        public void Generate(int complexity)
-        {
-            T intelligence = new T();
-            intelligence.GenerateGenome(complexity);
-            intelligence.Initialize();
-
-            intelligences.Add(intelligence);
-        }
-
-        public void Replicate(T intelligence)
-        {
-            if (!intelligences.Contains(intelligence)) return;
-
-            T replica = new T();
-            replica.ReplicateGenome(intelligence,
-                mutationChance,
-                complexificationChance,
-                simplificationChance,
-                maxMutations,
-                maxComplexifications,
-                maxSimplifications);
-            replica.Initialize();
-
-            intelligences.Add(replica);
         }
 
         public void Pulse()
         {
-            if (intelligences.Count == 0)
+            if (brains.Count == 0)
             {
                 Genesis(order, complexity);
             }
 
-            foreach (T intelligence in intelligences)
+            foreach (NeuralNetwork brain in brains)
             {
-                intelligence.Pulse();
+                brain.Pulse();
             }
         }
-
-        IEnumerator<T> IEnumerable<T>.GetEnumerator() => intelligences.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => intelligences.GetEnumerator();
     }
 }
