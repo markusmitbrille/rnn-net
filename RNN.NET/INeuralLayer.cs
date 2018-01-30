@@ -4,7 +4,12 @@ namespace Autrage.RNN.NET
 {
     public interface INeuralLayer : IList<INeuron>
     {
-        void Stimulate();
+        #region Methods
+
         void Activate();
+
+        void Stimulate();
+
+        #endregion Methods
     }
 }

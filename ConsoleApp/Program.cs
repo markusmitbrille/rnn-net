@@ -1,15 +1,13 @@
 ﻿using Autrage.LEX.NET;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        #region Methods
+
+        private static void Main(string[] args)
         {
             for (int i = 0; i < 100; i++)
             {
@@ -18,5 +16,7 @@ namespace ConsoleApp
 
             Console.ReadLine();
         }
+
+        #endregion Methods
     }
 }

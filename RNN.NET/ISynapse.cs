@@ -2,7 +2,11 @@
 {
     public interface ISynapse
     {
-        IStimulator Stimulator { get; }
+        #region Properties
+
         double Signal { get; }
+        IStimulator Stimulator { get; }
+
+        #endregion Properties
     }
 }

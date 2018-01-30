@@ -2,8 +2,12 @@
 
 namespace Autrage.RNN.NET
 {
-    class Sigmon : Neuron
+    internal class Sigmon : Neuron
     {
+        #region Methods
+
         protected override double ActivationFunction(double stimulus) => 1 / (1 + Math.Exp(-stimulus));
+
+        #endregion Methods
     }
 }

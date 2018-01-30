@@ -4,14 +4,15 @@ using System.Collections.Generic;
 
 namespace Autrage.RNN.NET
 {
-    class NeuralLayer : INeuralLayer
+    internal class NeuralLayer : INeuralLayer
     {
+        #region Fields
+
         private IList<INeuron> neurons = new List<INeuron>();
 
-        public INeuron this[int index] { get => neurons[index]; set => neurons[index] = value ?? throw new ArgumentNullException(nameof(value)); }
+        #endregion Fields
 
-        public int Count => neurons.Count;
-        public bool IsReadOnly => neurons.IsReadOnly;
+        #region Constructors
 
         public NeuralLayer()
         {
@@ -22,6 +23,23 @@ namespace Autrage.RNN.NET
             this.neurons = new List<INeuron>(neurons);
         }
 
+        #endregion Constructors
+
+        #region Properties
+
+        public int Count => neurons.Count;
+        public bool IsReadOnly => neurons.IsReadOnly;
+
+        #endregion Properties
+
+        #region Indexers
+
+        public INeuron this[int index] { get => neurons[index]; set => neurons[index] = value ?? throw new ArgumentNullException(nameof(value)); }
+
+        #endregion Indexers
+
+        #region Methods
+
         public void Activate()
         {
             foreach (INeuron neuron in neurons)
@@ -30,6 +48,14 @@ namespace Autrage.RNN.NET
             }
         }
 
+        public void Add(INeuron item) => neurons.Add(item ?? throw new ArgumentNullException(nameof(item)));
+
+        public void Clear() => neurons.Clear();
+
+        public bool Contains(INeuron item) => neurons.Contains(item);
+
+        public bool Remove(INeuron item) => neurons.Remove(item);
+
         public void Stimulate()
         {
             foreach (INeuron neuron in neurons)
@@ -37,21 +63,19 @@ namespace Autrage.RNN.NET
                 neuron.Stimulate();
             }
         }
-        public void Add(INeuron item) => neurons.Add(item ?? throw new ArgumentNullException(nameof(item)));
-        void IList<INeuron>.Insert(int index, INeuron item) => neurons.Insert(index, item ?? throw new ArgumentNullException(nameof(item)));
-
-        public bool Remove(INeuron item) => neurons.Remove(item);
-        void IList<INeuron>.RemoveAt(int index) => neurons.RemoveAt(index);
-
-        public void Clear() => neurons.Clear();
-
-        public bool Contains(INeuron item) => neurons.Contains(item);
 
         void ICollection<INeuron>.CopyTo(INeuron[] array, int arrayIndex) => neurons.CopyTo(array, arrayIndex);
 
+        IEnumerator<INeuron> IEnumerable<INeuron>.GetEnumerator() => neurons.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => neurons.GetEnumerator();
+
         int IList<INeuron>.IndexOf(INeuron item) => neurons.IndexOf(item);
 
-        IEnumerator<INeuron> IEnumerable<INeuron>.GetEnumerator() => neurons.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => neurons.GetEnumerator();
+        void IList<INeuron>.Insert(int index, INeuron item) => neurons.Insert(index, item ?? throw new ArgumentNullException(nameof(item)));
+
+        void IList<INeuron>.RemoveAt(int index) => neurons.RemoveAt(index);
+
+        #endregion Methods
     }
 }

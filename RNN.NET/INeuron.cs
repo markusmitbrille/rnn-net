@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Autrage.RNN.NET
+﻿namespace Autrage.RNN.NET
 {
     public interface INeuron : IStimuland, IStimulator
     {
+        #region Properties
+
         double Bias { get; }
+
+        #endregion Properties
     }
 }

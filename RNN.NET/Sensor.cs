@@ -1,17 +1,27 @@
-﻿using System;
-
-namespace Autrage.RNN.NET
+﻿namespace Autrage.RNN.NET
 {
     public abstract class Sensor : IStimulator
     {
-        public double State { get; private set; }
+        #region Constructors
 
         public Sensor()
         {
         }
 
+        #endregion Constructors
+
+        #region Properties
+
+        public double State { get; private set; }
+
+        #endregion Properties
+
+        #region Methods
+
         public void Activate() => State = Fetch();
 
         protected abstract double Fetch();
+
+        #endregion Methods
     }
 }
