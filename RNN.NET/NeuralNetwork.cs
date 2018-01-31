@@ -308,7 +308,6 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            [ProtoContract(SkipConstructor = true)]
             private class OutLinker : Gene
             {
                 #region Fields
