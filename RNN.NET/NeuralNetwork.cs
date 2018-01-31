@@ -9,15 +9,12 @@ namespace Autrage.RNN.NET
     {
         #region Properties
 
-        private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
-
         private Genome NetworkGenome { get; }
 
-        private IList<INeuron> Nodes { get; } = new List<INeuron>();
-
         private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
-
         private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
+        private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
+        private IList<INeuron> Nodes { get; } = new List<INeuron>();
 
         #endregion Properties
 
