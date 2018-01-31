@@ -1,20 +1,46 @@
 ﻿using Autrage.LEX.NET;
+using ProtoBuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Autrage.RNN.NET
 {
+    [ProtoContract]
     internal class NeuralNetwork
     {
+        #region Fields
+
+        private static IEnumerable<Type> sensorTypes =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            from type in assembly.GetTypes()
+            where type.IsSubclassOf(typeof(Sensor))
+            let attribute = type.GetCustomAttributes<SensorAttribute>()
+            where attribute != null
+            select type;
+
+        private static IEnumerable<Type> muscleTypes =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            from type in assembly.GetTypes()
+            where type.IsSubclassOf(typeof(Muscle))
+            let attribute = type.GetCustomAttributes<MuscleAttribute>()
+            where attribute != null
+            select type;
+
+        #endregion Fields
+
         #region Properties
 
+        [ProtoMember(1)]
         private Genome NetworkGenome { get; }
+
+        [ProtoMember(2)]
+        private IList<INeuron> Nodes { get; } = new List<INeuron>();
 
         private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
         private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
         private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
-        private IList<INeuron> Nodes { get; } = new List<INeuron>();
 
         #endregion Properties
 
@@ -22,15 +48,23 @@ namespace Autrage.RNN.NET
 
         public NeuralNetwork(int complexity)
         {
+            InferSensors();
+            InferMuscles();
+
             NetworkGenome = new Genome(complexity);
             NetworkGenome.ApplyTo(this);
+
             InferLayers();
         }
 
         public NeuralNetwork(NeuralNetwork other)
         {
+            InferSensors();
+            InferMuscles();
+
             NetworkGenome = new Genome(other.NetworkGenome);
             NetworkGenome.ApplyTo(this);
+
             InferLayers();
         }
 
@@ -42,6 +76,9 @@ namespace Autrage.RNN.NET
             int maxComplexifications = 0,
             int maxSimplifications = 0)
         {
+            InferSensors();
+            InferMuscles();
+
             NetworkGenome = new Genome(other.NetworkGenome,
                 mutationChance,
                 complexificationChance,
@@ -51,7 +88,14 @@ namespace Autrage.RNN.NET
                 maxSimplifications);
 
             NetworkGenome.ApplyTo(this);
+
             InferLayers();
+        }
+
+        private NeuralNetwork()
+        {
+            InferSensors();
+            InferMuscles();
         }
 
         #endregion Constructors
@@ -77,6 +121,28 @@ namespace Autrage.RNN.NET
             }
         }
 
+        private void InferSensors()
+        {
+            foreach (Type sensorType in sensorTypes)
+            {
+                if (Activator.CreateInstance(sensorType, true) is Sensor sensor)
+                {
+                    Stimulators.Add(sensor);
+                }
+            }
+        }
+
+        private void InferMuscles()
+        {
+            foreach (Type muscleType in muscleTypes)
+            {
+                if (Activator.CreateInstance(muscleType, true) is Muscle muscle)
+                {
+                    Stimulands.Add(muscle);
+                }
+            }
+        }
+
         private void InferLayers()
         {
             Layers.Clear();
@@ -98,18 +164,20 @@ namespace Autrage.RNN.NET
 
         #region Classes
 
+        [ProtoContract]
+        [ProtoInclude(1, typeof(Dud))]
+        [ProtoInclude(2, typeof(PerceptronCreator))]
+        [ProtoInclude(3, typeof(SigmonCreator))]
+        [ProtoInclude(4, typeof(NodeLinker))]
+        [ProtoInclude(5, typeof(InLinker))]
+        [ProtoInclude(6, typeof(OutLinker))]
         private abstract class Gene
         {
-            #region Fields
-
-            private const int GeneTypeCount = 5;
-
-            #endregion Fields
-
             #region Methods
 
             public static Gene Next()
             {
+                const int GeneTypeCount = 5;
                 switch (Singleton<Random>.Instance.Next(GeneTypeCount))
                 {
                     case 0:
@@ -142,6 +210,7 @@ namespace Autrage.RNN.NET
 
             #region Classes
 
+            [ProtoContract]
             private class Dud : Gene
             {
                 #region Methods
@@ -159,39 +228,60 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            private class InLinker : Gene
+            [ProtoContract(SkipConstructor = true)]
+            private class SigmonCreator : Gene
             {
                 #region Fields
 
-                private int stimuland = Singleton<Random>.Instance.Next();
-                private int stimulator = Singleton<Random>.Instance.Next();
-                private double weight = Singleton<Random>.Instance.NextDouble();
+                [ProtoMember(1)]
+                private double bias = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
 
                 #region Methods
 
-                public override void ApplyTo(NeuralNetwork instance)
-                    => instance.Nodes[stimuland % instance.Nodes.Count].Synapses.Add(new Synapse(instance.Stimulators[stimulator % instance.Stimulators.Count]) { Weight = weight });
+                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Sigmon() { Bias = bias });
 
-                public override void Mutate()
-                {
-                    stimulator = Singleton<Random>.Instance.Next();
-                    stimuland = Singleton<Random>.Instance.Next();
-                    weight = Singleton<Random>.Instance.NextDouble();
-                }
+                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
 
-                public override Gene Replicate() => new InLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+                public override Gene Replicate() => new SigmonCreator() { bias = bias };
 
                 #endregion Methods
             }
 
+            [ProtoContract(SkipConstructor = true)]
+            private class PerceptronCreator : Gene
+            {
+                #region Fields
+
+                [ProtoMember(1)]
+                private double bias = Singleton<Random>.Instance.NextDouble();
+
+                #endregion Fields
+
+                #region Methods
+
+                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Perceptron() { Bias = bias });
+
+                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
+
+                public override Gene Replicate() => new PerceptronCreator() { bias = bias };
+
+                #endregion Methods
+            }
+
+            [ProtoContract(SkipConstructor = true)]
             private class NodeLinker : Gene
             {
                 #region Fields
 
+                [ProtoMember(1)]
                 private int stimuland = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(2)]
                 private int stimulator = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(3)]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -213,12 +303,51 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [ProtoContract(SkipConstructor = true)]
+            private class InLinker : Gene
+            {
+                #region Fields
+
+                [ProtoMember(1)]
+                private int stimuland = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(2)]
+                private int stimulator = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(3)]
+                private double weight = Singleton<Random>.Instance.NextDouble();
+
+                #endregion Fields
+
+                #region Methods
+
+                public override void ApplyTo(NeuralNetwork instance)
+                    => instance.Nodes[stimuland % instance.Nodes.Count].Synapses.Add(new Synapse(instance.Stimulators[stimulator % instance.Stimulators.Count]) { Weight = weight });
+
+                public override void Mutate()
+                {
+                    stimulator = Singleton<Random>.Instance.Next();
+                    stimuland = Singleton<Random>.Instance.Next();
+                    weight = Singleton<Random>.Instance.NextDouble();
+                }
+
+                public override Gene Replicate() => new InLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+
+                #endregion Methods
+            }
+
+            [ProtoContract(SkipConstructor = true)]
             private class OutLinker : Gene
             {
                 #region Fields
 
+                [ProtoMember(1)]
                 private int stimuland = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(2)]
                 private int stimulator = Singleton<Random>.Instance.Next();
+
+                [ProtoMember(3)]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -240,51 +369,15 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            private class PerceptronCreator : Gene
-            {
-                #region Fields
-
-                private double bias = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Perceptron() { Bias = bias });
-
-                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
-
-                public override Gene Replicate() => new PerceptronCreator() { bias = bias };
-
-                #endregion Methods
-            }
-
-            private class SigmonCreator : Gene
-            {
-                #region Fields
-
-                private double bias = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Sigmon() { Bias = bias });
-
-                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
-
-                public override Gene Replicate() => new SigmonCreator() { bias = bias };
-
-                #endregion Methods
-            }
-
             #endregion Classes
         }
 
+        [ProtoContract]
         private class Genome
         {
             #region Properties
 
+            [ProtoMember(1)]
             private IList<Gene> Genes { get; } = new List<Gene>();
 
             #endregion Properties
