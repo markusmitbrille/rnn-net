@@ -7,7 +7,6 @@ using System.Reflection;
 
 namespace Autrage.RNN.NET
 {
-    [ProtoContract]
     internal class NeuralNetwork
     {
         #region Fields
@@ -32,10 +31,8 @@ namespace Autrage.RNN.NET
 
         #region Properties
 
-        [ProtoMember(1)]
         private Genome NetworkGenome { get; }
 
-        [ProtoMember(2)]
         private IList<INeuron> Nodes { get; } = new List<INeuron>();
 
         private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
@@ -164,13 +161,6 @@ namespace Autrage.RNN.NET
 
         #region Classes
 
-        [ProtoContract]
-        [ProtoInclude(1, typeof(Dud))]
-        [ProtoInclude(2, typeof(PerceptronCreator))]
-        [ProtoInclude(3, typeof(SigmonCreator))]
-        [ProtoInclude(4, typeof(NodeLinker))]
-        [ProtoInclude(5, typeof(InLinker))]
-        [ProtoInclude(6, typeof(OutLinker))]
         private abstract class Gene
         {
             #region Methods
@@ -210,7 +200,6 @@ namespace Autrage.RNN.NET
 
             #region Classes
 
-            [ProtoContract]
             private class Dud : Gene
             {
                 #region Methods
@@ -228,12 +217,10 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            [ProtoContract(SkipConstructor = true)]
             private class SigmonCreator : Gene
             {
                 #region Fields
 
-                [ProtoMember(1)]
                 private double bias = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -249,12 +236,10 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            [ProtoContract(SkipConstructor = true)]
             private class PerceptronCreator : Gene
             {
                 #region Fields
 
-                [ProtoMember(1)]
                 private double bias = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -270,18 +255,12 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            [ProtoContract(SkipConstructor = true)]
             private class NodeLinker : Gene
             {
                 #region Fields
 
-                [ProtoMember(1)]
                 private int stimuland = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(2)]
                 private int stimulator = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(3)]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -303,18 +282,12 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
-            [ProtoContract(SkipConstructor = true)]
             private class InLinker : Gene
             {
                 #region Fields
 
-                [ProtoMember(1)]
                 private int stimuland = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(2)]
                 private int stimulator = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(3)]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -341,13 +314,8 @@ namespace Autrage.RNN.NET
             {
                 #region Fields
 
-                [ProtoMember(1)]
                 private int stimuland = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(2)]
                 private int stimulator = Singleton<Random>.Instance.Next();
-
-                [ProtoMember(3)]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -372,12 +340,10 @@ namespace Autrage.RNN.NET
             #endregion Classes
         }
 
-        [ProtoContract]
         private class Genome
         {
             #region Properties
 
-            [ProtoMember(1)]
             private IList<Gene> Genes { get; } = new List<Gene>();
 
             #endregion Properties
