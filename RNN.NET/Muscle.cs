@@ -5,6 +5,12 @@ namespace Autrage.RNN.NET
 {
     public abstract class Muscle : IStimuland
     {
+        #region Properties
+
+        public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
+
+        #endregion Properties
+
         #region Constructors
 
         public Muscle()
@@ -12,12 +18,6 @@ namespace Autrage.RNN.NET
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
-
-        #endregion Properties
 
         #region Methods
 

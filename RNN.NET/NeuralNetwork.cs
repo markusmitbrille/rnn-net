@@ -7,6 +7,20 @@ namespace Autrage.RNN.NET
 {
     internal class NeuralNetwork
     {
+        #region Properties
+
+        private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
+
+        private Genome NetworkGenome { get; }
+
+        private IList<INeuron> Nodes { get; } = new List<INeuron>();
+
+        private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
+
+        private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
+
+        #endregion Properties
+
         #region Constructors
 
         public NeuralNetwork(int complexity)
@@ -44,20 +58,6 @@ namespace Autrage.RNN.NET
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
-
-        private Genome NetworkGenome { get; }
-
-        private IList<INeuron> Nodes { get; } = new List<INeuron>();
-
-        private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
-
-        private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
-
-        #endregion Properties
 
         #region Methods
 
@@ -286,6 +286,12 @@ namespace Autrage.RNN.NET
 
         private class Genome
         {
+            #region Properties
+
+            private IList<Gene> Genes { get; } = new List<Gene>();
+
+            #endregion Properties
+
             #region Constructors
 
             public Genome(int complexity)
@@ -333,12 +339,6 @@ namespace Autrage.RNN.NET
             }
 
             #endregion Constructors
-
-            #region Properties
-
-            private IList<Gene> Genes { get; } = new List<Gene>();
-
-            #endregion Properties
 
             #region Methods
 

@@ -12,6 +12,20 @@ namespace Autrage.RNN.NET
 
         #endregion Fields
 
+        #region Indexers
+
+        public INeuron this[int index] { get => neurons[index]; set => neurons[index] = value ?? throw new ArgumentNullException(nameof(value)); }
+
+        #endregion Indexers
+
+        #region Properties
+
+        public int Count => neurons.Count;
+
+        public bool IsReadOnly => neurons.IsReadOnly;
+
+        #endregion Properties
+
         #region Constructors
 
         public NeuralLayer()
@@ -24,19 +38,6 @@ namespace Autrage.RNN.NET
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        public int Count => neurons.Count;
-        public bool IsReadOnly => neurons.IsReadOnly;
-
-        #endregion Properties
-
-        #region Indexers
-
-        public INeuron this[int index] { get => neurons[index]; set => neurons[index] = value ?? throw new ArgumentNullException(nameof(value)); }
-
-        #endregion Indexers
 
         #region Methods
 

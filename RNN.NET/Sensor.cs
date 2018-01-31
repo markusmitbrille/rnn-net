@@ -2,6 +2,12 @@
 {
     public abstract class Sensor : IStimulator
     {
+        #region Properties
+
+        public double State { get; private set; }
+
+        #endregion Properties
+
         #region Constructors
 
         public Sensor()
@@ -9,12 +15,6 @@
         }
 
         #endregion Constructors
-
-        #region Properties
-
-        public double State { get; private set; }
-
-        #endregion Properties
 
         #region Methods
 
