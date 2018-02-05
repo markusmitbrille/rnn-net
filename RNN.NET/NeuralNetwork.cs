@@ -14,7 +14,7 @@ namespace Autrage.RNN.NET
             from assembly in AppDomain.CurrentDomain.GetAssemblies()
             from type in assembly.GetTypes()
             where type.IsSubclassOf(typeof(Sensor))
-            let attribute = type.GetCustomAttributes<SensorAttribute>()
+            let attribute = type.GetCustomAttribute<SensorAttribute>()
             where attribute != null
             select type;
 
@@ -22,7 +22,7 @@ namespace Autrage.RNN.NET
             from assembly in AppDomain.CurrentDomain.GetAssemblies()
             from type in assembly.GetTypes()
             where type.IsSubclassOf(typeof(Muscle))
-            let attribute = type.GetCustomAttributes<MuscleAttribute>()
+            let attribute = type.GetCustomAttribute<MuscleAttribute>()
             where attribute != null
             select type;
 
