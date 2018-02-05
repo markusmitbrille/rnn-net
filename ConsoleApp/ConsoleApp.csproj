@@ -51,5 +51,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lex-net\LEX.NET\LEX.NET.csproj">
+      <Project>{70682BB8-924B-4C36-BA96-0F7019D686D2}</Project>
+      <Name>LEX.NET</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
