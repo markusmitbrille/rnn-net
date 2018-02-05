@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Autrage.LEX.NET.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal class NeuralLayer : INeuralLayer
     {
         #region Fields
 
+        [DataMember]
         private IList<INeuron> neurons = new List<INeuron>();
 
         #endregion Fields

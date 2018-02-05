@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using Autrage.LEX.NET.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal abstract class Neuron : INeuron
     {
         #region Fields
 
+        [DataMember]
         private double stimulus;
 
         #endregion Fields
 
         #region Properties
 
+        [DataMember]
         public double State { get; private set; }
 
+        [DataMember]
         public double Bias { get; set; }
 
+        [DataMember]
         public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
 
         #endregion Properties

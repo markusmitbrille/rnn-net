@@ -1,23 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Autrage.LEX.NET.Serialization;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     public abstract class Muscle : IStimuland
     {
         #region Properties
 
+        [DataMember]
         public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
 
         #endregion Properties
-
-        #region Constructors
-
-        public Muscle()
-        {
-        }
-
-        #endregion Constructors
 
         #region Methods
 

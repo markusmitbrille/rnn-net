@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Autrage.LEX.NET.Serialization;
+using System;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal class Sigmon : Neuron
     {
         #region Methods

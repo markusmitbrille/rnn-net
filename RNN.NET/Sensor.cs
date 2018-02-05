@@ -1,20 +1,16 @@
-﻿namespace Autrage.RNN.NET
+﻿using Autrage.LEX.NET.Serialization;
+
+namespace Autrage.RNN.NET
 {
+    [DataContract]
     public abstract class Sensor : IStimulator
     {
         #region Properties
 
+        [DataMember]
         public double State { get; private set; }
 
         #endregion Properties
-
-        #region Constructors
-
-        public Sensor()
-        {
-        }
-
-        #endregion Constructors
 
         #region Methods
 

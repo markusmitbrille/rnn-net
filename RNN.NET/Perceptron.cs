@@ -1,5 +1,8 @@
-﻿namespace Autrage.RNN.NET
+﻿using Autrage.LEX.NET.Serialization;
+
+namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal class Perceptron : Neuron
     {
         #region Methods

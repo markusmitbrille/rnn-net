@@ -1,4 +1,5 @@
 ﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Reflection;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal class NeuralNetwork
     {
         #region Fields
@@ -30,12 +32,19 @@ namespace Autrage.RNN.NET
 
         #region Properties
 
+        [DataMember]
         private Genome NetworkGenome { get; }
 
+        [DataMember]
         private IList<INeuron> Nodes { get; } = new List<INeuron>();
 
+        [DataMember]
         private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
+
+        [DataMember]
         private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
+
+        [DataMember]
         private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
 
         #endregion Properties
@@ -90,8 +99,6 @@ namespace Autrage.RNN.NET
 
         private NeuralNetwork()
         {
-            InferSensors();
-            InferMuscles();
         }
 
         #endregion Constructors
@@ -199,6 +206,7 @@ namespace Autrage.RNN.NET
 
             #region Classes
 
+            [DataContract]
             private class Dud : Gene
             {
                 #region Methods
@@ -216,10 +224,12 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [DataContract]
             private class SigmonCreator : Gene
             {
                 #region Fields
 
+                [DataMember]
                 private double bias = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -235,10 +245,12 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [DataContract]
             private class PerceptronCreator : Gene
             {
                 #region Fields
 
+                [DataMember]
                 private double bias = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -254,12 +266,18 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [DataContract]
             private class NodeLinker : Gene
             {
                 #region Fields
 
+                [DataMember]
                 private int stimuland = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private int stimulator = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -281,12 +299,18 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [DataContract]
             private class InLinker : Gene
             {
                 #region Fields
 
+                [DataMember]
                 private int stimuland = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private int stimulator = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -308,12 +332,18 @@ namespace Autrage.RNN.NET
                 #endregion Methods
             }
 
+            [DataContract]
             private class OutLinker : Gene
             {
                 #region Fields
 
+                [DataMember]
                 private int stimuland = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private int stimulator = Singleton<Random>.Instance.Next();
+
+                [DataMember]
                 private double weight = Singleton<Random>.Instance.NextDouble();
 
                 #endregion Fields
@@ -338,10 +368,12 @@ namespace Autrage.RNN.NET
             #endregion Classes
         }
 
+        [DataContract]
         private class Genome
         {
             #region Properties
 
+            [DataMember]
             private IList<Gene> Genes { get; } = new List<Gene>();
 
             #endregion Properties
