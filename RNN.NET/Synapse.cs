@@ -10,7 +10,7 @@ namespace Autrage.RNN.NET
         public double Signal => Weight * Stimulator?.State ?? 0;
 
         [DataMember]
-        public IStimulator Stimulator { get; }
+        public IStimulator Stimulator { get; private set; }
 
         [DataMember]
         public double Weight { get; set; }

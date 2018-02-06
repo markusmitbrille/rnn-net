@@ -23,7 +23,7 @@ namespace Autrage.RNN.NET
         public double Bias { get; set; }
 
         [DataMember]
-        public IList<ISynapse> Synapses { get; } = new List<ISynapse>();
+        public IList<ISynapse> Synapses { get; private set; } = new List<ISynapse>();
 
         #endregion Properties
 

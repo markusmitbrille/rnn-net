@@ -28,26 +28,22 @@ namespace Autrage.RNN.NET
             where attribute != null
             select type;
 
+        [DataMember]
+        private Genome genome;
+
+        [DataMember]
+        private IList<INeuron> nodes = new List<INeuron>();
+
+        [DataMember]
+        private IList<IStimuland> stimulands = new List<IStimuland>();
+
+        [DataMember]
+        private IList<IStimulator> stimulators = new List<IStimulator>();
+
+        [DataMember]
+        private IList<INeuralLayer> layers = new List<INeuralLayer>();
+
         #endregion Fields
-
-        #region Properties
-
-        [DataMember]
-        private Genome NetworkGenome { get; }
-
-        [DataMember]
-        private IList<INeuron> Nodes { get; } = new List<INeuron>();
-
-        [DataMember]
-        private IList<IStimuland> Stimulands { get; } = new List<IStimuland>();
-
-        [DataMember]
-        private IList<IStimulator> Stimulators { get; } = new List<IStimulator>();
-
-        [DataMember]
-        private IList<INeuralLayer> Layers { get; } = new List<INeuralLayer>();
-
-        #endregion Properties
 
         #region Constructors
 
@@ -56,8 +52,8 @@ namespace Autrage.RNN.NET
             InferSensors();
             InferMuscles();
 
-            NetworkGenome = new Genome(complexity);
-            NetworkGenome.ApplyTo(this);
+            genome = new Genome(complexity);
+            genome.ApplyTo(this);
 
             InferLayers();
         }
@@ -67,8 +63,8 @@ namespace Autrage.RNN.NET
             InferSensors();
             InferMuscles();
 
-            NetworkGenome = new Genome(other.NetworkGenome);
-            NetworkGenome.ApplyTo(this);
+            genome = new Genome(other.genome);
+            genome.ApplyTo(this);
 
             InferLayers();
         }
@@ -84,7 +80,7 @@ namespace Autrage.RNN.NET
             InferSensors();
             InferMuscles();
 
-            NetworkGenome = new Genome(other.NetworkGenome,
+            genome = new Genome(other.genome,
                 mutationChance,
                 complexificationChance,
                 simplificationChance,
@@ -92,7 +88,7 @@ namespace Autrage.RNN.NET
                 maxComplexifications,
                 maxSimplifications);
 
-            NetworkGenome.ApplyTo(this);
+            genome.ApplyTo(this);
 
             InferLayers();
         }
@@ -107,18 +103,18 @@ namespace Autrage.RNN.NET
 
         public void Pulse()
         {
-            foreach (IStimulator stimulator in Stimulators)
+            foreach (IStimulator stimulator in stimulators)
             {
                 stimulator.Activate();
             }
 
-            foreach (INeuralLayer layer in Layers)
+            foreach (INeuralLayer layer in layers)
             {
                 layer.Stimulate();
                 layer.Activate();
             }
 
-            foreach (IStimuland stimuland in Stimulands)
+            foreach (IStimuland stimuland in stimulands)
             {
                 stimuland.Stimulate();
             }
@@ -130,7 +126,7 @@ namespace Autrage.RNN.NET
             {
                 if (Activator.CreateInstance(sensorType, true) is Sensor sensor)
                 {
-                    Stimulators.Add(sensor);
+                    stimulators.Add(sensor);
                 }
             }
         }
@@ -141,22 +137,22 @@ namespace Autrage.RNN.NET
             {
                 if (Activator.CreateInstance(muscleType, true) is Muscle muscle)
                 {
-                    Stimulands.Add(muscle);
+                    stimulands.Add(muscle);
                 }
             }
         }
 
         private void InferLayers()
         {
-            Layers.Clear();
+            layers.Clear();
 
-            IEnumerable<INeuron> nextLayer = Nodes.Where(node => node.Synapses.Any(synapse => Stimulators.Contains(synapse.Stimulator)));
-            IEnumerable<INeuron> leftoverNodes = Nodes.Except(nextLayer);
+            IEnumerable<INeuron> nextLayer = nodes.Where(node => node.Synapses.Any(synapse => stimulators.Contains(synapse.Stimulator)));
+            IEnumerable<INeuron> leftoverNodes = nodes.Except(nextLayer);
 
             while (nextLayer.Count() > 0)
             {
                 NeuralLayer layer = new NeuralLayer(nextLayer);
-                Layers.Add(layer);
+                layers.Add(layer);
 
                 nextLayer = leftoverNodes.Where(node => node.Synapses.Any(synapse => layer.Contains(synapse.Stimulator)));
                 leftoverNodes = leftoverNodes.Except(layer);
@@ -236,7 +232,7 @@ namespace Autrage.RNN.NET
 
                 #region Methods
 
-                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Sigmon() { Bias = bias });
+                public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Sigmon() { Bias = bias });
 
                 public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
 
@@ -257,7 +253,7 @@ namespace Autrage.RNN.NET
 
                 #region Methods
 
-                public override void ApplyTo(NeuralNetwork instance) => instance.Nodes.Add(new Perceptron() { Bias = bias });
+                public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Perceptron() { Bias = bias });
 
                 public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
 
@@ -285,7 +281,7 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.Nodes[stimuland % instance.Nodes.Count].Synapses.Add(new Synapse(instance.Nodes[stimulator % instance.Nodes.Count]) { Weight = weight });
+                    => instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
 
                 public override void Mutate()
                 {
@@ -318,7 +314,7 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.Nodes[stimuland % instance.Nodes.Count].Synapses.Add(new Synapse(instance.Stimulators[stimulator % instance.Stimulators.Count]) { Weight = weight });
+                    => instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.stimulators[stimulator % instance.stimulators.Count]) { Weight = weight });
 
                 public override void Mutate()
                 {
@@ -351,7 +347,7 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.Stimulands[stimuland % instance.Stimulands.Count].Synapses.Add(new Synapse(instance.Nodes[stimulator % instance.Nodes.Count]) { Weight = weight });
+                    => instance.stimulands[stimuland % instance.stimulands.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
 
                 public override void Mutate()
                 {
