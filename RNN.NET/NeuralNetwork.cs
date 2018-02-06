@@ -8,7 +8,7 @@ using System.Reflection;
 namespace Autrage.RNN.NET
 {
     [DataContract]
-    internal class NeuralNetwork
+    public class NeuralNetwork
     {
         #region Fields
 
@@ -281,7 +281,14 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+                {
+                    if (!instance.nodes.Any())
+                    {
+                        return;
+                    }
+
+                    instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+                }
 
                 public override void Mutate()
                 {
@@ -314,7 +321,18 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.stimulators[stimulator % instance.stimulators.Count]) { Weight = weight });
+                {
+                    if (!instance.stimulators.Any())
+                    {
+                        return;
+                    }
+                    if (!instance.nodes.Any())
+                    {
+                        return;
+                    }
+
+                    instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.stimulators[stimulator % instance.stimulators.Count]) { Weight = weight });
+                }
 
                 public override void Mutate()
                 {
@@ -347,7 +365,18 @@ namespace Autrage.RNN.NET
                 #region Methods
 
                 public override void ApplyTo(NeuralNetwork instance)
-                    => instance.stimulands[stimuland % instance.stimulands.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+                {
+                    if (!instance.stimulands.Any())
+                    {
+                        return;
+                    }
+                    if (!instance.nodes.Any())
+                    {
+                        return;
+                    }
+
+                    instance.stimulands[stimuland % instance.stimulands.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+                }
 
                 public override void Mutate()
                 {
