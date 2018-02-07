@@ -293,7 +293,131 @@ namespace Autrage.RNN.NET
             #endregion Methods
         }
 
-        private abstract class Gene
+        [DataContract]
+        internal class Genome
+        {
+            #region Fields
+
+            [DataMember]
+            private IList<Gene> genes = new List<Gene>();
+
+            #endregion Fields
+
+            #region Constructors
+
+            public Genome(int complexity)
+            {
+                for (int i = 0; i < complexity; i++)
+                {
+                    genes.Add(Gene.Next());
+                }
+            }
+
+            public Genome(Genome other)
+            {
+                foreach (Gene gene in other.genes)
+                {
+                    genes.Add(gene.Replicate());
+                }
+            }
+
+            public Genome(Genome other,
+                double mutationChance = 0,
+                double complexificationChance = 0,
+                double simplificationChance = 0,
+                int maxMutations = 0,
+                int maxComplexifications = 0,
+                int maxSimplifications = 0)
+            {
+                foreach (Gene gene in other.genes)
+                {
+                    genes.Add(gene.Replicate());
+                }
+
+                for (int i = 0; i < maxMutations; i++)
+                    if (Singleton<Random>.Instance.NextDouble() < mutationChance)
+                        Mutate();
+                for (int i = 0; i < maxComplexifications; i++)
+                    if (Singleton<Random>.Instance.NextDouble() < complexificationChance)
+                        Complexify();
+                for (int i = 0; i < maxSimplifications; i++)
+                    if (Singleton<Random>.Instance.NextDouble() < simplificationChance)
+                        Simplify();
+            }
+
+            private Genome()
+            {
+            }
+
+            #endregion Constructors
+
+            #region Methods
+
+            public void ApplyTo(NeuralNetwork instance)
+            {
+                foreach (Gene gene in genes)
+                {
+                    gene.ApplyTo(instance);
+                }
+            }
+
+            private void Complexify() => genes.Add(Gene.Next());
+
+            private void Mutate() => genes[Singleton<Random>.Instance.Next(genes.Count)].Mutate();
+
+            private void Simplify() => genes.Remove(genes.Last());
+
+            #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(Genome);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    Genome genome = (Genome)instance;
+
+                    stream.Write(genome.genes.Count);
+                    foreach (Gene gene in genome.genes)
+                    {
+                        Marshaller.Serialize(stream, gene);
+                    }
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    Genome genome = (Genome)instance;
+
+                    if (stream.ReadInt() is int geneCount)
+                    {
+                        genome.genes = new List<Gene>(geneCount);
+                        for (int i = 0; i < geneCount; i++)
+                        {
+                            genome.genes.Add(Marshaller.Deserialize<Gene>(stream));
+                        }
+                    }
+                    else
+                    {
+                        Warning("Could not read genome gene count!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
+        }
+
+        internal abstract class Gene
         {
             #region Methods
 
@@ -329,193 +453,36 @@ namespace Autrage.RNN.NET
             public abstract Gene Replicate();
 
             #endregion Methods
+        }
+
+        [DataContract]
+        internal class Dud : Gene
+        {
+            #region Methods
+
+            public override void ApplyTo(NeuralNetwork instance)
+            {
+            }
+
+            public override void Mutate()
+            {
+            }
+
+            public override Gene Replicate() => new Dud();
+
+            #endregion Methods
 
             #region Classes
 
-            [DataContract]
-            private class Dud : Gene
+            internal class Serializer : ReferenceTypeSerializer
             {
                 #region Methods
 
-                public override void ApplyTo(NeuralNetwork instance)
-                {
-                }
+                public override bool CanHandle(Type type) => type == typeof(Dud);
 
-                public override void Mutate()
-                {
-                }
+                protected override bool SerializePayload(Stream stream, object instance) => true;
 
-                public override Gene Replicate() => new Dud();
-
-                #endregion Methods
-            }
-
-            [DataContract]
-            private class SigmonCreator : Gene
-            {
-                #region Fields
-
-                [DataMember]
-                private double bias = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Sigmon() { Bias = bias });
-
-                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
-
-                public override Gene Replicate() => new SigmonCreator() { bias = bias };
-
-                #endregion Methods
-            }
-
-            [DataContract]
-            private class PerceptronCreator : Gene
-            {
-                #region Fields
-
-                [DataMember]
-                private double bias = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Perceptron() { Bias = bias });
-
-                public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
-
-                public override Gene Replicate() => new PerceptronCreator() { bias = bias };
-
-                #endregion Methods
-            }
-
-            [DataContract]
-            private class NodeLinker : Gene
-            {
-                #region Fields
-
-                [DataMember]
-                private int stimuland = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private int stimulator = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private double weight = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance)
-                {
-                    if (!instance.nodes.Any())
-                    {
-                        return;
-                    }
-
-                    instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
-                }
-
-                public override void Mutate()
-                {
-                    stimulator = Singleton<Random>.Instance.Next();
-                    stimuland = Singleton<Random>.Instance.Next();
-                    weight = Singleton<Random>.Instance.NextDouble();
-                }
-
-                public override Gene Replicate() => new NodeLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
-
-                #endregion Methods
-            }
-
-            [DataContract]
-            private class InLinker : Gene
-            {
-                #region Fields
-
-                [DataMember]
-                private int stimuland = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private int stimulator = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private double weight = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance)
-                {
-                    if (!instance.stimulators.Any())
-                    {
-                        return;
-                    }
-                    if (!instance.nodes.Any())
-                    {
-                        return;
-                    }
-
-                    instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.stimulators[stimulator % instance.stimulators.Count]) { Weight = weight });
-                }
-
-                public override void Mutate()
-                {
-                    stimulator = Singleton<Random>.Instance.Next();
-                    stimuland = Singleton<Random>.Instance.Next();
-                    weight = Singleton<Random>.Instance.NextDouble();
-                }
-
-                public override Gene Replicate() => new InLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
-
-                #endregion Methods
-            }
-
-            [DataContract]
-            private class OutLinker : Gene
-            {
-                #region Fields
-
-                [DataMember]
-                private int stimuland = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private int stimulator = Singleton<Random>.Instance.Next();
-
-                [DataMember]
-                private double weight = Singleton<Random>.Instance.NextDouble();
-
-                #endregion Fields
-
-                #region Methods
-
-                public override void ApplyTo(NeuralNetwork instance)
-                {
-                    if (!instance.stimulands.Any())
-                    {
-                        return;
-                    }
-                    if (!instance.nodes.Any())
-                    {
-                        return;
-                    }
-
-                    instance.stimulands[stimuland % instance.stimulands.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
-                }
-
-                public override void Mutate()
-                {
-                    stimulator = Singleton<Random>.Instance.Next();
-                    stimuland = Singleton<Random>.Instance.Next();
-                    weight = Singleton<Random>.Instance.NextDouble();
-                }
-
-                public override Gene Replicate() => new OutLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+                protected override bool DeserializePayload(Stream stream, object instance) => true;
 
                 #endregion Methods
             }
@@ -524,80 +491,434 @@ namespace Autrage.RNN.NET
         }
 
         [DataContract]
-        private class Genome
+        internal class SigmonCreator : Gene
         {
-            #region Properties
+            #region Fields
 
             [DataMember]
-            private IList<Gene> Genes { get; } = new List<Gene>();
+            private double bias = Singleton<Random>.Instance.NextDouble();
 
-            #endregion Properties
-
-            #region Constructors
-
-            public Genome(int complexity)
-            {
-                for (int i = 0; i < complexity; i++)
-                {
-                    Genes.Add(Gene.Next());
-                }
-            }
-
-            public Genome(Genome other)
-            {
-                foreach (Gene gene in other.Genes)
-                {
-                    Genes.Add(gene.Replicate());
-                }
-            }
-
-            public Genome(Genome other,
-                double mutationChance = 0,
-                double complexificationChance = 0,
-                double simplificationChance = 0,
-                int maxMutations = 0,
-                int maxComplexifications = 0,
-                int maxSimplifications = 0)
-            {
-                foreach (Gene gene in other.Genes)
-                {
-                    Genes.Add(gene.Replicate());
-                }
-
-                for (int i = 0; i < maxMutations; i++)
-                    if (Singleton<Random>.Instance.NextDouble() < mutationChance)
-                        Mutate();
-                for (int i = 0; i < maxComplexifications; i++)
-                    if (Singleton<Random>.Instance.NextDouble() < complexificationChance)
-                        Complexify();
-                for (int i = 0; i < maxSimplifications; i++)
-                    if (Singleton<Random>.Instance.NextDouble() < simplificationChance)
-                        Simplify();
-            }
-
-            private Genome()
-            {
-            }
-
-            #endregion Constructors
+            #endregion Fields
 
             #region Methods
 
-            public void ApplyTo(NeuralNetwork instance)
-            {
-                foreach (Gene gene in Genes)
-                {
-                    gene.ApplyTo(instance);
-                }
-            }
+            public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Sigmon() { Bias = bias });
 
-            private void Complexify() => Genes.Add(Gene.Next());
+            public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
 
-            private void Mutate() => Genes[Singleton<Random>.Instance.Next(Genes.Count)].Mutate();
-
-            private void Simplify() => Genes.Remove(Genes.Last());
+            public override Gene Replicate() => new SigmonCreator() { bias = bias };
 
             #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(SigmonCreator);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    SigmonCreator gene = (SigmonCreator)instance;
+
+                    stream.Write(gene.bias);
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    SigmonCreator gene = (SigmonCreator)instance;
+
+                    if (stream.ReadDouble() is double bias)
+                    {
+                        gene.bias = bias;
+                    }
+                    else
+                    {
+                        Warning("Could not read sigmon creator bias!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
+        }
+
+        [DataContract]
+        internal class PerceptronCreator : Gene
+        {
+            #region Fields
+
+            [DataMember]
+            private double bias = Singleton<Random>.Instance.NextDouble();
+
+            #endregion Fields
+
+            #region Methods
+
+            public override void ApplyTo(NeuralNetwork instance) => instance.nodes.Add(new Perceptron() { Bias = bias });
+
+            public override void Mutate() => bias = Singleton<Random>.Instance.NextDouble();
+
+            public override Gene Replicate() => new PerceptronCreator() { bias = bias };
+
+            #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(PerceptronCreator);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    PerceptronCreator gene = (PerceptronCreator)instance;
+
+                    stream.Write(gene.bias);
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    PerceptronCreator gene = (PerceptronCreator)instance;
+
+                    if (stream.ReadDouble() is double bias)
+                    {
+                        gene.bias = bias;
+                    }
+                    else
+                    {
+                        Warning("Could not read perceptron creator bias!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
+        }
+
+        [DataContract]
+        internal class NodeLinker : Gene
+        {
+            #region Fields
+
+            [DataMember]
+            private int stimuland = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private int stimulator = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private double weight = Singleton<Random>.Instance.NextDouble();
+
+            #endregion Fields
+
+            #region Methods
+
+            public override void ApplyTo(NeuralNetwork instance)
+            {
+                if (!instance.nodes.Any())
+                {
+                    return;
+                }
+
+                instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+            }
+
+            public override void Mutate()
+            {
+                stimuland = Singleton<Random>.Instance.Next();
+                stimulator = Singleton<Random>.Instance.Next();
+                weight = Singleton<Random>.Instance.NextDouble();
+            }
+
+            public override Gene Replicate() => new NodeLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+
+            #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    NodeLinker gene = (NodeLinker)instance;
+
+                    stream.Write(gene.stimuland);
+                    stream.Write(gene.stimulator);
+                    stream.Write(gene.weight);
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    NodeLinker gene = (NodeLinker)instance;
+
+                    if (stream.ReadInt() is int stimuland)
+                    {
+                        gene.stimuland = stimuland;
+                    }
+                    else
+                    {
+                        Warning("Could not read node linker stimuland!");
+                        return false;
+                    }
+
+                    if (stream.ReadInt() is int stimulator)
+                    {
+                        gene.stimulator = stimulator;
+                    }
+                    else
+                    {
+                        Warning("Could not read node linker stimulator!");
+                        return false;
+                    }
+
+                    if (stream.ReadDouble() is double weight)
+                    {
+                        gene.weight = weight;
+                    }
+                    else
+                    {
+                        Warning("Could not read node linker weight!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
+        }
+
+        [DataContract]
+        internal class InLinker : Gene
+        {
+            #region Fields
+
+            [DataMember]
+            private int stimuland = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private int stimulator = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private double weight = Singleton<Random>.Instance.NextDouble();
+
+            #endregion Fields
+
+            #region Methods
+
+            public override void ApplyTo(NeuralNetwork instance)
+            {
+                if (!instance.stimulators.Any())
+                {
+                    return;
+                }
+                if (!instance.nodes.Any())
+                {
+                    return;
+                }
+
+                instance.nodes[stimuland % instance.nodes.Count].Synapses.Add(new Synapse(instance.stimulators[stimulator % instance.stimulators.Count]) { Weight = weight });
+            }
+
+            public override void Mutate()
+            {
+                stimulator = Singleton<Random>.Instance.Next();
+                stimuland = Singleton<Random>.Instance.Next();
+                weight = Singleton<Random>.Instance.NextDouble();
+            }
+
+            public override Gene Replicate() => new InLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+
+            #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    InLinker gene = (InLinker)instance;
+
+                    stream.Write(gene.stimuland);
+                    stream.Write(gene.stimulator);
+                    stream.Write(gene.weight);
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    InLinker gene = (InLinker)instance;
+
+                    if (stream.ReadInt() is int stimuland)
+                    {
+                        gene.stimuland = stimuland;
+                    }
+                    else
+                    {
+                        Warning("Could not read in-linker stimuland!");
+                        return false;
+                    }
+
+                    if (stream.ReadInt() is int stimulator)
+                    {
+                        gene.stimulator = stimulator;
+                    }
+                    else
+                    {
+                        Warning("Could not read in-linker stimulator!");
+                        return false;
+                    }
+
+                    if (stream.ReadDouble() is double weight)
+                    {
+                        gene.weight = weight;
+                    }
+                    else
+                    {
+                        Warning("Could not read in-linker weight!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
+        }
+
+        [DataContract]
+        internal class OutLinker : Gene
+        {
+            #region Fields
+
+            [DataMember]
+            private int stimuland = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private int stimulator = Singleton<Random>.Instance.Next();
+
+            [DataMember]
+            private double weight = Singleton<Random>.Instance.NextDouble();
+
+            #endregion Fields
+
+            #region Methods
+
+            public override void ApplyTo(NeuralNetwork instance)
+            {
+                if (!instance.stimulands.Any())
+                {
+                    return;
+                }
+                if (!instance.nodes.Any())
+                {
+                    return;
+                }
+
+                instance.stimulands[stimuland % instance.stimulands.Count].Synapses.Add(new Synapse(instance.nodes[stimulator % instance.nodes.Count]) { Weight = weight });
+            }
+
+            public override void Mutate()
+            {
+                stimulator = Singleton<Random>.Instance.Next();
+                stimuland = Singleton<Random>.Instance.Next();
+                weight = Singleton<Random>.Instance.NextDouble();
+            }
+
+            public override Gene Replicate() => new OutLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
+
+            #endregion Methods
+
+            #region Classes
+
+            internal class Serializer : ReferenceTypeSerializer
+            {
+                #region Methods
+
+                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+
+                protected override bool SerializePayload(Stream stream, object instance)
+                {
+                    OutLinker gene = (OutLinker)instance;
+
+                    stream.Write(gene.stimuland);
+                    stream.Write(gene.stimulator);
+                    stream.Write(gene.weight);
+
+                    return true;
+                }
+
+                protected override bool DeserializePayload(Stream stream, object instance)
+                {
+                    OutLinker gene = (OutLinker)instance;
+
+                    if (stream.ReadInt() is int stimuland)
+                    {
+                        gene.stimuland = stimuland;
+                    }
+                    else
+                    {
+                        Warning("Could not read out-linker stimuland!");
+                        return false;
+                    }
+
+                    if (stream.ReadInt() is int stimulator)
+                    {
+                        gene.stimulator = stimulator;
+                    }
+                    else
+                    {
+                        Warning("Could not read out-linker stimulator!");
+                        return false;
+                    }
+
+                    if (stream.ReadDouble() is double weight)
+                    {
+                        gene.weight = weight;
+                    }
+                    else
+                    {
+                        Warning("Could not read out-linker weight!");
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                #endregion Methods
+            }
+
+            #endregion Classes
         }
 
         #endregion Classes
