@@ -1,14 +1,17 @@
 ﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Extensions;
 using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
 {
     [DataContract]
-    public class NeuralNetwork
+    public sealed class NeuralNetwork
     {
         #region Fields
 
@@ -162,6 +165,133 @@ namespace Autrage.RNN.NET
         #endregion Methods
 
         #region Classes
+
+        internal class Serializer : ReferenceTypeSerializer
+        {
+            #region Methods
+
+            public override bool CanHandle(Type type) => typeof(NeuralNetwork).IsAssignableFrom(type);
+
+            protected override bool SerializePayload(Stream stream, object instance)
+            {
+                NeuralNetwork network = (NeuralNetwork)instance;
+
+                Marshaller.Serialize(stream, network.genome);
+
+                stream.Write(network.nodes.Count);
+                foreach (INeuron node in network.nodes)
+                {
+                    Marshaller.Serialize(stream, node);
+                }
+
+                stream.Write(network.stimulands.Count);
+                foreach (IStimuland stimuland in network.stimulands)
+                {
+                    Marshaller.Serialize(stream, stimuland);
+                }
+
+                stream.Write(network.stimulators.Count);
+                foreach (IStimulator stimulator in network.stimulators)
+                {
+                    Marshaller.Serialize(stream, stimulator);
+                }
+
+                stream.Write(network.layers.Count);
+                foreach (INeuralLayer layer in network.layers)
+                {
+                    Marshaller.Serialize(stream, layer);
+                }
+
+                return true;
+            }
+
+            protected override bool DeserializePayload(Stream stream, object instance)
+            {
+                NeuralNetwork network = (NeuralNetwork)instance;
+
+                network.genome = Marshaller.Deserialize<Genome>(stream);
+
+                if (stream.ReadInt() is int nodeCount)
+                {
+                    DeserializeNodes(stream, network, nodeCount);
+                }
+                else
+                {
+                    Warning("Could not read network node count!");
+                    return false;
+                }
+
+                if (stream.ReadInt() is int stimulandCount)
+                {
+                    DeserializeStimulands(stream, network, stimulandCount);
+                }
+                else
+                {
+                    Warning("Could not read network stimuland count!");
+                    return false;
+                }
+
+                if (stream.ReadInt() is int stimulatorCount)
+                {
+                    DeserializeStimulators(stream, network, stimulatorCount);
+                }
+                else
+                {
+                    Warning("Could not read network stimulator count!");
+                    return false;
+                }
+
+                if (stream.ReadInt() is int layerCount)
+                {
+                    DeserializeLayers(stream, network, layerCount);
+                }
+                else
+                {
+                    Warning("Could not read network layer count!");
+                    return false;
+                }
+
+                return true;
+            }
+
+            private void DeserializeNodes(Stream stream, NeuralNetwork network, int nodeCount)
+            {
+                network.nodes = new List<INeuron>(nodeCount);
+                for (int i = 0; i < nodeCount; i++)
+                {
+                    network.nodes.Add(Marshaller.Deserialize<INeuron>(stream));
+                }
+            }
+
+            private void DeserializeStimulands(Stream stream, NeuralNetwork network, int stimulandCount)
+            {
+                network.stimulands = new List<IStimuland>(stimulandCount);
+                for (int i = 0; i < stimulandCount; i++)
+                {
+                    network.stimulands.Add(Marshaller.Deserialize<IStimuland>(stream));
+                }
+            }
+
+            private void DeserializeStimulators(Stream stream, NeuralNetwork network, int stimulatorCount)
+            {
+                network.stimulators = new List<IStimulator>(stimulatorCount);
+                for (int i = 0; i < stimulatorCount; i++)
+                {
+                    network.stimulators.Add(Marshaller.Deserialize<IStimulator>(stream));
+                }
+            }
+
+            private void DeserializeLayers(Stream stream, NeuralNetwork network, int layerCount)
+            {
+                network.layers = new List<INeuralLayer>(layerCount);
+                for (int i = 0; i < layerCount; i++)
+                {
+                    network.layers.Add(Marshaller.Deserialize<INeuralLayer>(stream));
+                }
+            }
+
+            #endregion Methods
+        }
 
         private abstract class Gene
         {
