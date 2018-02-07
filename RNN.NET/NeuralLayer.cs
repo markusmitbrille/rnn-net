@@ -1,7 +1,10 @@
-﻿using Autrage.LEX.NET.Serialization;
+﻿using Autrage.LEX.NET.Extensions;
+using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
 {
@@ -81,5 +84,55 @@ namespace Autrage.RNN.NET
         void IList<INeuron>.RemoveAt(int index) => neurons.RemoveAt(index);
 
         #endregion Methods
+
+        #region Classes
+
+        internal class Serializer : ReferenceTypeSerializer
+        {
+            #region Methods
+
+            public override bool CanHandle(Type type)
+            {
+                return typeof(NeuralLayer).IsAssignableFrom(type);
+            }
+
+            protected override bool SerializePayload(Stream stream, object instance)
+            {
+                NeuralLayer layer = (NeuralLayer)instance;
+
+                stream.Write(layer.neurons.Count);
+                foreach (INeuron neuron in layer.neurons)
+                {
+                    Marshaller.Serialize(stream, neuron);
+                }
+
+                return true;
+            }
+
+            protected override bool DeserializePayload(Stream stream, object instance)
+            {
+                NeuralLayer layer = (NeuralLayer)instance;
+
+                if (stream.ReadInt() is int neuronCount)
+                {
+                    layer.neurons = new List<INeuron>(neuronCount);
+                    for (int i = 0; i < neuronCount; i++)
+                    {
+                        layer.neurons.Add(Marshaller.Deserialize<INeuron>(stream));
+                    }
+                }
+                else
+                {
+                    Warning("Could not read genome gene count!");
+                    return false;
+                }
+
+                return true;
+            }
+
+            #endregion Methods
+        }
+
+        #endregion Classes
     }
 }
