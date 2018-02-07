@@ -63,6 +63,7 @@
     <Compile Include="Muscle.cs" />
     <Compile Include="SensorAttribute.cs" />
     <Compile Include="Sigmon.cs" />
+    <Compile Include="Simulation.cs" />
     <Compile Include="Synapse.cs" />
   </ItemGroup>
   <ItemGroup>
