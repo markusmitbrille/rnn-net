@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -55,6 +57,10 @@
     <ProjectReference Include="..\..\lex-net\LEX.NET\LEX.NET.csproj">
       <Project>{70682BB8-924B-4C36-BA96-0F7019D686D2}</Project>
       <Name>LEX.NET</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RNN.NET\RNN.NET.csproj">
+      <Project>{847d91ff-63f3-4e7b-a9bb-2288d2c83825}</Project>
+      <Name>RNN.NET</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
