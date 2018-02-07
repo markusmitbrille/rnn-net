@@ -39,6 +39,7 @@ namespace Autrage.RNN.NET
             Serializer[] networkSerializers = new Serializer[]
             {
                 new Neuron.Serializer(),
+                new Synapse.Serializer(),
                 new Muscle.Serializer(),
                 new Sensor.Serializer(),
                 new NeuralLayer.Serializer(),
@@ -76,6 +77,7 @@ namespace Autrage.RNN.NET
             Serializer[] networkSerializers = new Serializer[]
             {
                 new Neuron.Serializer(),
+                new Synapse.Serializer(),
                 new Muscle.Serializer(),
                 new Sensor.Serializer(),
                 new NeuralLayer.Serializer(),
