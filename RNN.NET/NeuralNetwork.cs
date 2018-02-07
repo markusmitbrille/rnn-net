@@ -375,7 +375,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(Genome);
+                public override bool CanHandle(Type type) => typeof(Genome).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
@@ -478,7 +478,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(Dud);
+                public override bool CanHandle(Type type) => typeof(Dud).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance) => true;
 
@@ -516,7 +516,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(SigmonCreator);
+                public override bool CanHandle(Type type) => typeof(SigmonCreator).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
@@ -576,7 +576,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(PerceptronCreator);
+                public override bool CanHandle(Type type) => typeof(PerceptronCreator).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
@@ -655,7 +655,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+                public override bool CanHandle(Type type) => typeof(NodeLinker).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
@@ -760,7 +760,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+                public override bool CanHandle(Type type) => typeof(InLinker).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
@@ -865,7 +865,7 @@ namespace Autrage.RNN.NET
             {
                 #region Methods
 
-                public override bool CanHandle(Type type) => type == typeof(NodeLinker);
+                public override bool CanHandle(Type type) => typeof(OutLinker).IsAssignableFrom(type);
 
                 protected override bool SerializePayload(Stream stream, object instance)
                 {
