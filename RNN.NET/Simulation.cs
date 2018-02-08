@@ -109,7 +109,7 @@ namespace Autrage.RNN.NET
         {
             for (int i = Count; i < Order; i++)
             {
-                Add(new NeuralNetwork(Complexity));
+                Add(NeuralNetwork.Create(Complexity));
             }
         }
 
@@ -122,7 +122,7 @@ namespace Autrage.RNN.NET
 
             foreach (NeuralNetwork network in this.OrderByDescending(Fitness).Take(ProliferationCount).ToArray())
             {
-                Add(new NeuralNetwork(network, MutationChance, ComplexificationChance, SimplificationChance, MaxMutations, MaxComplexifications, MaxSimplifications));
+                Add(network.Replicate(MutationChance, ComplexificationChance, SimplificationChance, MaxMutations, MaxComplexifications, MaxSimplifications));
             }
         }
 
@@ -190,15 +190,13 @@ namespace Autrage.RNN.NET
                 new Synapse.Serializer(),
                 new Muscle.Serializer(),
                 new Sensor.Serializer(),
-                new NeuralLayer.Serializer(),
                 new NeuralNetwork.Serializer(),
-                new NeuralNetwork.Genome.Serializer(),
-                new NeuralNetwork.Dud.Serializer(),
-                new NeuralNetwork.SigmonCreator.Serializer(),
-                new NeuralNetwork.PerceptronCreator.Serializer(),
-                new NeuralNetwork.NodeLinker.Serializer(),
-                new NeuralNetwork.InLinker.Serializer(),
-                new NeuralNetwork.OutLinker.Serializer(),
+                new Dud.Serializer(),
+                new SigmonCreator.Serializer(),
+                new PerceptronCreator.Serializer(),
+                new NodeLinker.Serializer(),
+                new InLinker.Serializer(),
+                new OutLinker.Serializer(),
                 new PrimitiveSerializer(),
                 new EnumSerializer(),
                 new ValueTypeSerializer(),

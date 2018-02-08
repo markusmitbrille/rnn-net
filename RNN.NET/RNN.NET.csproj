@@ -48,23 +48,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MuscleAttribute.cs" />
-    <Compile Include="Sensor.cs" />
-    <Compile Include="INeuralLayer.cs" />
-    <Compile Include="INeuron.cs" />
-    <Compile Include="IStimuland.cs" />
-    <Compile Include="IStimulator.cs" />
-    <Compile Include="ISynapse.cs" />
-    <Compile Include="NeuralLayer.cs" />
-    <Compile Include="NeuralNetwork.cs" />
-    <Compile Include="Neuron.cs" />
-    <Compile Include="Perceptron.cs" />
+    <Compile Include="Genetics\Dud.cs" />
+    <Compile Include="Genetics\Gene.cs" />
+    <Compile Include="Genetics\Genome.cs" />
+    <Compile Include="Networking\INeuralLayer.cs" />
+    <Compile Include="Genetics\InLinker.cs" />
+    <Compile Include="Interoperability\MuscleAttribute.cs" />
+    <Compile Include="Genetics\NetworkSkeleton.cs" />
+    <Compile Include="Genetics\NodeLinker.cs" />
+    <Compile Include="Genetics\OutLinker.cs" />
+    <Compile Include="Genetics\PerceptronCreator.cs" />
+    <Compile Include="Interoperability\Sensor.cs" />
+    <Compile Include="Neurology\INeuron.cs" />
+    <Compile Include="Neurology\IStimuland.cs" />
+    <Compile Include="Neurology\IStimulator.cs" />
+    <Compile Include="Neurology\ISynapse.cs" />
+    <Compile Include="Networking\NeuralNetwork.cs" />
+    <Compile Include="Neurology\Neuron.cs" />
+    <Compile Include="Neurology\Perceptron.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Muscle.cs" />
-    <Compile Include="SensorAttribute.cs" />
-    <Compile Include="Sigmon.cs" />
+    <Compile Include="Interoperability\Muscle.cs" />
+    <Compile Include="Interoperability\SensorAttribute.cs" />
+    <Compile Include="Neurology\Sigmon.cs" />
+    <Compile Include="Genetics\SigmonCreator.cs" />
     <Compile Include="Simulation.cs" />
-    <Compile Include="Synapse.cs" />
+    <Compile Include="Networking\StimulandLayer.cs" />
+    <Compile Include="Networking\StimulatorLayer.cs" />
+    <Compile Include="Neurology\Synapse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
