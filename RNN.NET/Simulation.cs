@@ -36,24 +36,7 @@ namespace Autrage.RNN.NET
 
         public static Simulation Deserialize(Stream stream, params Serializer[] serializers)
         {
-            Serializer[] networkSerializers = new Serializer[]
-            {
-                new Neuron.Serializer(),
-                new Synapse.Serializer(),
-                new Muscle.Serializer(),
-                new Sensor.Serializer(),
-                new NeuralLayer.Serializer(),
-                new NeuralNetwork.Serializer(),
-                new NeuralNetwork.Genome.Serializer(),
-                new NeuralNetwork.Dud.Serializer(),
-                new NeuralNetwork.SigmonCreator.Serializer(),
-                new NeuralNetwork.PerceptronCreator.Serializer(),
-                new NeuralNetwork.NodeLinker.Serializer(),
-                new NeuralNetwork.InLinker.Serializer(),
-                new NeuralNetwork.OutLinker.Serializer(),
-            };
-
-            Marshaller marshaller = new Marshaller(serializers.Concat(networkSerializers).ToArray());
+            Marshaller marshaller = new Marshaller(serializers.Concat(GetDefaultSerializers()).ToArray());
 
             if (stream.ReadInt() is int networkCount)
             {
@@ -74,24 +57,7 @@ namespace Autrage.RNN.NET
 
         public void Serialize(Stream stream, params Serializer[] serializers)
         {
-            Serializer[] networkSerializers = new Serializer[]
-            {
-                new Neuron.Serializer(),
-                new Synapse.Serializer(),
-                new Muscle.Serializer(),
-                new Sensor.Serializer(),
-                new NeuralLayer.Serializer(),
-                new NeuralNetwork.Serializer(),
-                new NeuralNetwork.Genome.Serializer(),
-                new NeuralNetwork.Dud.Serializer(),
-                new NeuralNetwork.SigmonCreator.Serializer(),
-                new NeuralNetwork.PerceptronCreator.Serializer(),
-                new NeuralNetwork.NodeLinker.Serializer(),
-                new NeuralNetwork.InLinker.Serializer(),
-                new NeuralNetwork.OutLinker.Serializer(),
-            };
-
-            Marshaller marshaller = new Marshaller(serializers.Concat(networkSerializers).ToArray());
+            Marshaller marshaller = new Marshaller(serializers.Concat(GetDefaultSerializers()).ToArray());
 
             stream.Write(Count);
             foreach (NeuralNetwork network in this)
@@ -127,6 +93,33 @@ namespace Autrage.RNN.NET
             {
                 network.Pulse();
             }
+        }
+
+        private static Serializer[] GetDefaultSerializers()
+        {
+            return new Serializer[]
+            {
+                new Neuron.Serializer(),
+                new Synapse.Serializer(),
+                new Muscle.Serializer(),
+                new Sensor.Serializer(),
+                new NeuralLayer.Serializer(),
+                new NeuralNetwork.Serializer(),
+                new NeuralNetwork.Genome.Serializer(),
+                new NeuralNetwork.Dud.Serializer(),
+                new NeuralNetwork.SigmonCreator.Serializer(),
+                new NeuralNetwork.PerceptronCreator.Serializer(),
+                new NeuralNetwork.NodeLinker.Serializer(),
+                new NeuralNetwork.InLinker.Serializer(),
+                new NeuralNetwork.OutLinker.Serializer(),
+                new PrimitiveSerializer(),
+                new EnumSerializer(),
+                new ValueTypeSerializer(),
+                new ListSerializer(),
+                new DictionarySerializer(),
+                new GenericCollectionSerializer(),
+                new ContractSerializer(),
+            };
         }
 
         #endregion Methods
