@@ -13,8 +13,8 @@ namespace Autrage.RNN.NET
     {
         #region Fields
 
-        public Func<NeuralNetwork, double> Fitness;
         private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
+
         private double cutoffPercentile;
 
         #endregion Fields
@@ -22,8 +22,9 @@ namespace Autrage.RNN.NET
         #region Properties
 
         public int Order { get; set; }
-
         public int Complexity { get; set; }
+
+        public Func<NeuralNetwork, double> Fitness { get; set; }
 
         public double CutoffPercentile
         {
