@@ -149,16 +149,31 @@ namespace Autrage.RNN.NET
         {
             layers.Clear();
 
-            IEnumerable<INeuron> nextLayer = nodes.Where(node => node.Synapses.Any(synapse => stimulators.Contains(synapse.Stimulator)));
-            IEnumerable<INeuron> leftoverNodes = nodes.Except(nextLayer);
+            IEnumerable<INeuron> leftoverNodes = nodes;
+            IEnumerable<INeuron> nextLayer =
+                from node in nodes
+                from stimuland in stimulands
+                from synapse in stimuland.Synapses
+                where node == synapse.Stimulator
+                select node;
 
             while (nextLayer.Count() > 0)
             {
                 NeuralLayer layer = new NeuralLayer(nextLayer);
-                layers.Add(layer);
+                layers.Insert(0, layer);
 
-                nextLayer = leftoverNodes.Where(node => node.Synapses.Any(synapse => layer.Contains(synapse.Stimulator)));
                 leftoverNodes = leftoverNodes.Except(layer);
+                nextLayer =
+                    from leftoverNode in leftoverNodes
+                    from layerNode in layer
+                    from synapse in layerNode.Synapses
+                    where leftoverNode == synapse.Stimulator
+                    select leftoverNode;
+            }
+
+            foreach (INeuron leftoverNode in leftoverNodes.ToArray())
+            {
+                nodes.Remove(leftoverNode);
             }
         }
 
