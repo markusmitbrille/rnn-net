@@ -16,6 +16,7 @@ namespace Autrage.RNN.NET
         private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
 
         private double cutoffPercentile;
+        private double proliferationPercentile;
 
         #endregion Fields
 
@@ -23,6 +24,13 @@ namespace Autrage.RNN.NET
 
         public int Order { get; set; }
         public int Complexity { get; set; }
+
+        public double MutationChance { get; set; }
+        public double ComplexificationChance { get; set; }
+        public double SimplificationChance { get; set; }
+        public int MaxMutations { get; set; }
+        public int MaxComplexifications { get; set; }
+        public int MaxSimplifications { get; set; }
 
         public Func<NeuralNetwork, double> Fitness { get; set; }
 
@@ -32,7 +40,14 @@ namespace Autrage.RNN.NET
             set => cutoffPercentile = value.Clamp01();
         }
 
+        public double ProliferationPercentile
+        {
+            get => proliferationPercentile;
+            set => proliferationPercentile = value.Clamp01();
+        }
+
         public int CutoffCount => (int)(Count * cutoffPercentile);
+        public int ProliferationCount => (int)(Count * proliferationPercentile);
 
         public int Count => networks.Count;
 
@@ -90,7 +105,7 @@ namespace Autrage.RNN.NET
             }
         }
 
-        public void Genesis()
+        public void Populate()
         {
             for (int i = Count; i < Order; i++)
             {
@@ -98,14 +113,27 @@ namespace Autrage.RNN.NET
             }
         }
 
-        public void Armageddon()
+        public void Proliferate()
         {
             if (Fitness == null)
             {
                 return;
             }
 
-            foreach (NeuralNetwork network in this.OrderBy(Fitness).Take(CutoffCount).ToList())
+            foreach (NeuralNetwork network in this.OrderByDescending(Fitness).Take(ProliferationCount).ToArray())
+            {
+                Add(new NeuralNetwork(network, MutationChance, ComplexificationChance, SimplificationChance, MaxMutations, MaxComplexifications, MaxSimplifications));
+            }
+        }
+
+        public void Cutoff()
+        {
+            if (Fitness == null)
+            {
+                return;
+            }
+
+            foreach (NeuralNetwork network in this.OrderBy(Fitness).Take(CutoffCount).ToArray())
             {
                 Remove(network);
             }

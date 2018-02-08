@@ -19,7 +19,7 @@ namespace ConsoleApp
             };
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            simulation.Genesis();
+            simulation.Populate();
             stopwatch.Stop();
             Console.WriteLine($"Genesis: {stopwatch.ElapsedMilliseconds}ms");
 
