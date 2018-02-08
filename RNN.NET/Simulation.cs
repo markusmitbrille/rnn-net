@@ -1,6 +1,7 @@
 ﻿using Autrage.LEX.NET.Extensions;
 using Autrage.LEX.NET.Serialization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,11 +9,12 @@ using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
 {
-    public class Simulation : List<NeuralNetwork>
+    public class Simulation : ICollection<NeuralNetwork>
     {
         #region Fields
 
         public Func<NeuralNetwork, double> Fitness;
+        private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
         private double cutoffPercentile;
 
         #endregion Fields
@@ -20,6 +22,7 @@ namespace Autrage.RNN.NET
         #region Properties
 
         public int Order { get; set; }
+
         public int Complexity { get; set; }
 
         public double CutoffPercentile
@@ -30,7 +33,27 @@ namespace Autrage.RNN.NET
 
         public int CutoffCount => (int)(Count * cutoffPercentile);
 
+        public int Count => networks.Count;
+
+        bool ICollection<NeuralNetwork>.IsReadOnly => networks.IsReadOnly;
+
         #endregion Properties
+
+        #region Events
+
+        public event EventHandler<NetworkEventArgs> Adding;
+
+        public event EventHandler<NetworkEventArgs> Added;
+
+        public event EventHandler<NetworkEventArgs> Removing;
+
+        public event EventHandler<NetworkEventArgs> Removed;
+
+        public event EventHandler Clearing;
+
+        public event EventHandler Cleared;
+
+        #endregion Events
 
         #region Methods
 
@@ -95,6 +118,41 @@ namespace Autrage.RNN.NET
             }
         }
 
+        public void Add(NeuralNetwork item)
+        {
+            if (item == null) return;
+
+            Adding?.Invoke(this, new NetworkEventArgs(item));
+            networks.Add(item);
+            Added?.Invoke(this, new NetworkEventArgs(item));
+        }
+
+        public bool Remove(NeuralNetwork item)
+        {
+            if (!Contains(item)) return false;
+
+            Removing?.Invoke(this, new NetworkEventArgs(item));
+            networks.Remove(item);
+            Removed?.Invoke(this, new NetworkEventArgs(item));
+
+            return true;
+        }
+
+        public void Clear()
+        {
+            Clearing?.Invoke(this, EventArgs.Empty);
+            networks.Clear();
+            Cleared?.Invoke(this, EventArgs.Empty);
+        }
+
+        public bool Contains(NeuralNetwork item) => networks.Contains(item);
+
+        public void CopyTo(NeuralNetwork[] array, int arrayIndex) => networks.CopyTo(array, arrayIndex);
+
+        IEnumerator<NeuralNetwork> IEnumerable<NeuralNetwork>.GetEnumerator() => networks.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => networks.GetEnumerator();
+
         private static Serializer[] GetDefaultSerializers()
         {
             return new Serializer[]
@@ -123,5 +181,27 @@ namespace Autrage.RNN.NET
         }
 
         #endregion Methods
+
+        #region Classes
+
+        public class NetworkEventArgs : EventArgs
+        {
+            #region Properties
+
+            public NeuralNetwork Network { get; }
+
+            #endregion Properties
+
+            #region Constructors
+
+            public NetworkEventArgs(NeuralNetwork network)
+            {
+                Network = network ?? throw new ArgumentNullException(nameof(network));
+            }
+
+            #endregion Constructors
+        }
+
+        #endregion Classes
     }
 }
