@@ -12,6 +12,9 @@ namespace Autrage.RNN.NET
         #region Properties
 
         [DataMember]
+        public NeuralNetwork Network { get; internal set; }
+
+        [DataMember]
         public double State { get; private set; }
 
         #endregion Properties
@@ -36,6 +39,7 @@ namespace Autrage.RNN.NET
             {
                 Sensor sensor = (Sensor)instance;
 
+                Marshaller.Serialize(stream, sensor.Network);
                 stream.Write(sensor.State);
 
                 return true;
@@ -44,6 +48,8 @@ namespace Autrage.RNN.NET
             protected override bool DeserializePayload(Stream stream, object instance)
             {
                 Sensor sensor = (Sensor)instance;
+
+                sensor.Network = Marshaller.Deserialize<NeuralNetwork>(stream);
 
                 if (stream.ReadDouble() is double state)
                 {

@@ -31,6 +31,7 @@ namespace Autrage.RNN.NET
             this.layers = layers ?? throw new ArgumentNullException(nameof(layers));
 
             AddLayerListeners();
+            SetBackReferences();
         }
 
         private NeuralNetwork()
@@ -66,6 +67,21 @@ namespace Autrage.RNN.NET
             foreach (INeuralLayer layer in layers)
             {
                 layer.Completed += OnLayerCompleted;
+            }
+        }
+
+        private void SetBackReferences()
+        {
+            foreach (INeuralLayer layer in layers)
+            {
+                foreach (Muscle muscle in layer)
+                {
+                    muscle.Network = this;
+                }
+                foreach (Sensor sensor in layer)
+                {
+                    sensor.Network = this;
+                }
             }
         }
 

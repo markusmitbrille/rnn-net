@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 
 namespace Autrage.RNN.NET
 {
-    internal interface INeuralLayer
+    internal interface INeuralLayer : IList
     {
         #region Events
 

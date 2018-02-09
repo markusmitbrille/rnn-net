@@ -14,6 +14,9 @@ namespace Autrage.RNN.NET
         #region Properties
 
         [DataMember]
+        public NeuralNetwork Network { get; internal set; }
+
+        [DataMember]
         public IList<ISynapse> Synapses { get; private set; } = new List<ISynapse>();
 
         #endregion Properties
@@ -38,6 +41,8 @@ namespace Autrage.RNN.NET
             {
                 Muscle muscle = (Muscle)instance;
 
+                Marshaller.Serialize(stream, muscle.Network);
+
                 stream.Write(muscle.Synapses.Count);
                 foreach (ISynapse synapse in muscle.Synapses)
                 {
@@ -50,6 +55,8 @@ namespace Autrage.RNN.NET
             protected override bool DeserializePayload(Stream stream, object instance)
             {
                 Muscle muscle = (Muscle)instance;
+
+                muscle.Network = Marshaller.Deserialize<NeuralNetwork>(stream);
 
                 if (stream.ReadInt() is int synapseCount)
                 {
