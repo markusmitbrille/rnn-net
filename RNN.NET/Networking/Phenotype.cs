@@ -6,11 +6,15 @@ using System.IO;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     internal class Phenotype : IEnumerable<INeuralLayer>, IEnumerable
     {
         #region Fields
 
+        [DataMember]
         private IList<INeuralLayer> layers;
+
+        [DataMember]
         private int currentLayer;
 
         #endregion Fields

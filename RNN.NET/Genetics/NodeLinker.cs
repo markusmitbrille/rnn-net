@@ -1,10 +1,7 @@
 ﻿using Autrage.LEX.NET;
-using Autrage.LEX.NET.Extensions;
 using Autrage.LEX.NET.Serialization;
 using System;
-using System.IO;
 using System.Linq;
-using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
 {
@@ -46,66 +43,5 @@ namespace Autrage.RNN.NET
         public override Gene Replicate() => new NodeLinker() { stimulator = stimulator, stimuland = stimuland, weight = weight };
 
         #endregion Methods
-
-        #region Classes
-
-        internal class Serializer : ReferenceTypeSerializer
-        {
-            #region Methods
-
-            public override bool CanHandle(Type type) => typeof(NodeLinker).IsAssignableFrom(type);
-
-            protected override bool SerializePayload(Stream stream, object instance)
-            {
-                NodeLinker gene = (NodeLinker)instance;
-
-                stream.Write(gene.stimuland);
-                stream.Write(gene.stimulator);
-                stream.Write(gene.weight);
-
-                return true;
-            }
-
-            protected override bool DeserializePayload(Stream stream, object instance)
-            {
-                NodeLinker gene = (NodeLinker)instance;
-
-                if (stream.ReadInt() is int stimuland)
-                {
-                    gene.stimuland = stimuland;
-                }
-                else
-                {
-                    Warning("Could not read node linker stimuland!");
-                    return false;
-                }
-
-                if (stream.ReadInt() is int stimulator)
-                {
-                    gene.stimulator = stimulator;
-                }
-                else
-                {
-                    Warning("Could not read node linker stimulator!");
-                    return false;
-                }
-
-                if (stream.ReadDouble() is double weight)
-                {
-                    gene.weight = weight;
-                }
-                else
-                {
-                    Warning("Could not read node linker weight!");
-                    return false;
-                }
-
-                return true;
-            }
-
-            #endregion Methods
-        }
-
-        #endregion Classes
     }
 }

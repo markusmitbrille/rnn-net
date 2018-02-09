@@ -186,16 +186,7 @@ namespace Autrage.RNN.NET
         {
             return new Serializer[]
             {
-                new Neuron.Serializer(),
-                new Synapse.Serializer(),
-                new Muscle.Serializer(),
-                new Sensor.Serializer(),
-                new Dud.Serializer(),
-                new SigmonCreator.Serializer(),
-                new PerceptronCreator.Serializer(),
-                new NodeLinker.Serializer(),
-                new InLinker.Serializer(),
-                new OutLinker.Serializer(),
+                new Phenotype.Serializer(),
                 new PrimitiveSerializer(),
                 new EnumSerializer(),
                 new ValueTypeSerializer(),

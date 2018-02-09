@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Autrage.RNN.NET
 {
-    internal interface INeuralLayer : IList
+    internal interface INeuralLayer : IEnumerable
     {
         #region Events
 

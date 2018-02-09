@@ -1,14 +1,19 @@
-﻿using System;
+﻿using Autrage.LEX.NET.Serialization;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Autrage.RNN.NET
 {
-    internal class StimulatorLayer : Collection<IStimulator>, INeuralLayer
+    [DataContract]
+    internal class StimulatorLayer : INeuralLayer, IEnumerable<IStimulator>, IEnumerable
     {
         #region Fields
 
+        [DataMember]
+        private List<IStimulator> stimulators;
+
+        [DataMember]
         private int current;
 
         #endregion Fields
@@ -21,17 +26,7 @@ namespace Autrage.RNN.NET
 
         #region Constructors
 
-        public StimulatorLayer()
-        {
-        }
-
-        public StimulatorLayer(IList<IStimulator> list) : base(list)
-        {
-        }
-
-        public StimulatorLayer(IEnumerable<IStimulator> enumerable) : base(enumerable.ToList())
-        {
-        }
+        public StimulatorLayer(IEnumerable<IStimulator> collection) => stimulators = new List<IStimulator>(collection);
 
         #endregion Constructors
 
@@ -39,10 +34,10 @@ namespace Autrage.RNN.NET
 
         public void Pulse()
         {
-            if (Count == 0) return;
-            if (current < Count)
+            if (stimulators.Count == 0) return;
+            if (current < stimulators.Count)
             {
-                this[current].Activate();
+                stimulators[current].Activate();
             }
             else
             {
@@ -50,6 +45,10 @@ namespace Autrage.RNN.NET
                 Completed?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public IEnumerator<IStimulator> GetEnumerator() => stimulators.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => stimulators.GetEnumerator();
 
         #endregion Methods
     }
