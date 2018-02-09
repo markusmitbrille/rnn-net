@@ -50,7 +50,7 @@ namespace Autrage.RNN.NET
 
         #region Methods
 
-        internal IList<INeuralLayer> ToLayers()
+        internal Phenotype ToPhenotype()
         {
             IList<INeuralLayer> layers = new List<INeuralLayer>();
             layers.Insert(0, new StimulandLayer(Stimulands));
@@ -81,7 +81,7 @@ namespace Autrage.RNN.NET
 
             layers.Insert(0, new StimulatorLayer(Stimulators));
 
-            return layers;
+            return new Phenotype(layers);
         }
 
         private static IEnumerable<IStimulator> InstantiateSensors()

@@ -65,7 +65,7 @@ namespace Autrage.RNN.NET
                 gene.ApplyTo(skeleton);
             }
 
-            return new NeuralNetwork(this, skeleton.ToLayers());
+            return new NeuralNetwork(this, skeleton.ToPhenotype());
         }
 
         private void Complexify() => Add(Gene.Next());

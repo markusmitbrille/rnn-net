@@ -59,6 +59,7 @@
     <Compile Include="Genetics\OutLinker.cs" />
     <Compile Include="Genetics\PerceptronCreator.cs" />
     <Compile Include="Interoperability\Sensor.cs" />
+    <Compile Include="Networking\Phenotype.cs" />
     <Compile Include="Neurology\INeuron.cs" />
     <Compile Include="Neurology\IStimuland.cs" />
     <Compile Include="Neurology\IStimulator.cs" />

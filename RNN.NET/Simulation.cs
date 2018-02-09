@@ -190,7 +190,6 @@ namespace Autrage.RNN.NET
                 new Synapse.Serializer(),
                 new Muscle.Serializer(),
                 new Sensor.Serializer(),
-                new NeuralNetwork.Serializer(),
                 new Dud.Serializer(),
                 new SigmonCreator.Serializer(),
                 new PerceptronCreator.Serializer(),
