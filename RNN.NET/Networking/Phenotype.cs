@@ -27,6 +27,10 @@ namespace Autrage.RNN.NET
             AddLayerListeners();
         }
 
+        private Phenotype()
+        {
+        }
+
         #endregion Constructors
 
         #region Methods

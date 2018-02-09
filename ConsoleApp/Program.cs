@@ -14,11 +14,7 @@ namespace ConsoleApp
 
         private static void Main(string[] args)
         {
-            ArrayList arrayList = new ArrayList() { 7, "derp", true, "lol" };
-            foreach (string text in arrayList.OfType<string>())
-            {
-                Console.WriteLine(text);
-            }
+            TestSimulation();
 
             Console.ReadLine();
         }
@@ -27,8 +23,8 @@ namespace ConsoleApp
         {
             Simulation simulation = new Simulation()
             {
-                Order = 100,
-                Complexity = 1000,
+                Order = 10,
+                Complexity = 100,
             };
 
             Stopwatch stopwatch = Stopwatch.StartNew();

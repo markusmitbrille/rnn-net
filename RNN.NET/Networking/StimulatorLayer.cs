@@ -28,6 +28,10 @@ namespace Autrage.RNN.NET
 
         public StimulatorLayer(IEnumerable<IStimulator> collection) => stimulators = new List<IStimulator>(collection);
 
+        private StimulatorLayer()
+        {
+        }
+
         #endregion Constructors
 
         #region Methods
