@@ -1,8 +1,10 @@
 ﻿using Autrage.LEX.NET.Extensions;
 using Autrage.RNN.NET;
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace ConsoleApp
 {
@@ -11,6 +13,17 @@ namespace ConsoleApp
         #region Methods
 
         private static void Main(string[] args)
+        {
+            ArrayList arrayList = new ArrayList() { 7, "derp", true, "lol" };
+            foreach (string text in arrayList.OfType<string>())
+            {
+                Console.WriteLine(text);
+            }
+
+            Console.ReadLine();
+        }
+
+        private static void TestSimulation()
         {
             Simulation simulation = new Simulation()
             {
@@ -42,8 +55,6 @@ namespace ConsoleApp
                 stopwatch.Stop();
                 Console.WriteLine($"Serialization: {stopwatch.ElapsedMilliseconds}ms");
             }
-
-            Console.ReadLine();
         }
 
         #endregion Methods

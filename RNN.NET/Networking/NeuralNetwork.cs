@@ -3,6 +3,7 @@ using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
@@ -74,11 +75,11 @@ namespace Autrage.RNN.NET
         {
             foreach (INeuralLayer layer in layers)
             {
-                foreach (Muscle muscle in layer)
+                foreach (Muscle muscle in layer.OfType<Muscle>())
                 {
                     muscle.Network = this;
                 }
-                foreach (Sensor sensor in layer)
+                foreach (Sensor sensor in layer.OfType<Sensor>())
                 {
                     sensor.Network = this;
                 }
