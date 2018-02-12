@@ -9,8 +9,6 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class MuscleCreator
     {
-        #region Fields
-
         private static Type[] types =
             (from assembly in AppDomain.CurrentDomain.GetAssemblies()
              from type in assembly.GetTypes()
@@ -23,17 +21,11 @@ namespace Autrage.RNN.NET
         [DataMember]
         private int type = Rnd.Int();
 
-        #endregion Fields
-
-        #region Methods
-
         public Muscle Create(NeuralNetwork network)
         {
             Muscle muscle = (Muscle)Activator.CreateInstance(types[type % types.Length], true);
             muscle.Network = network;
             return muscle;
         }
-
-        #endregion Methods
     }
 }

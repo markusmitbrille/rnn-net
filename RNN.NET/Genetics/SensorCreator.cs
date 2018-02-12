@@ -9,8 +9,6 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class SensorCreator
     {
-        #region Fields
-
         private static Type[] types =
             (from assembly in AppDomain.CurrentDomain.GetAssemblies()
              from type in assembly.GetTypes()
@@ -23,17 +21,11 @@ namespace Autrage.RNN.NET
         [DataMember]
         private int type = Rnd.Int();
 
-        #endregion Fields
-
-        #region Methods
-
         public Sensor Create(NeuralNetwork network)
         {
             Sensor sensor = (Sensor)Activator.CreateInstance(types[type % types.Length], true);
             sensor.Network = network;
             return sensor;
         }
-
-        #endregion Methods
     }
 }

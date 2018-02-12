@@ -5,15 +5,9 @@ namespace Autrage.RNN.NET
 {
     internal class NetworkSkeleton
     {
-        #region Properties
-
         public List<Neuron> Neurons { get; } = new List<Neuron>();
         public List<Sensor> Stimulators { get; } = new List<Sensor>();
         public List<Muscle> Stimulands { get; } = new List<Muscle>();
-
-        #endregion Properties
-
-        #region Methods
 
         public Phenotype ToPhenotype()
         {
@@ -48,7 +42,5 @@ namespace Autrage.RNN.NET
 
             return new Phenotype(layers);
         }
-
-        #endregion Methods
     }
 }

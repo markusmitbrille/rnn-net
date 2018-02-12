@@ -11,16 +11,10 @@ namespace Autrage.RNN.NET
 {
     public class Simulation : ICollection<NeuralNetwork>
     {
-        #region Fields
-
         private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
 
         private double cutoffPercentile;
         private double proliferationPercentile;
-
-        #endregion Fields
-
-        #region Properties
 
         public int Order { get; set; }
         public int GenomeComplexity { get; set; }
@@ -56,10 +50,6 @@ namespace Autrage.RNN.NET
 
         bool ICollection<NeuralNetwork>.IsReadOnly => networks.IsReadOnly;
 
-        #endregion Properties
-
-        #region Events
-
         public event EventHandler<NetworkEventArgs> Adding;
 
         public event EventHandler<NetworkEventArgs> Added;
@@ -71,10 +61,6 @@ namespace Autrage.RNN.NET
         public event EventHandler Clearing;
 
         public event EventHandler Cleared;
-
-        #endregion Events
-
-        #region Methods
 
         public static Simulation Deserialize(Stream stream, params Serializer[] serializers)
         {
@@ -200,28 +186,14 @@ namespace Autrage.RNN.NET
             };
         }
 
-        #endregion Methods
-
-        #region Classes
-
         public class NetworkEventArgs : EventArgs
         {
-            #region Properties
-
             public NeuralNetwork Network { get; }
-
-            #endregion Properties
-
-            #region Constructors
 
             public NetworkEventArgs(NeuralNetwork network)
             {
                 Network = network ?? throw new ArgumentNullException(nameof(network));
             }
-
-            #endregion Constructors
         }
-
-        #endregion Classes
     }
 }

@@ -7,14 +7,8 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal abstract class Neuron : INeuron
     {
-        #region Fields
-
         [DataMember]
         private double stimulus;
-
-        #endregion Fields
-
-        #region Properties
 
         [DataMember]
         public double State { get; private set; }
@@ -25,16 +19,10 @@ namespace Autrage.RNN.NET
         [DataMember]
         public IList<ISynapse> Synapses { get; private set; } = new List<ISynapse>();
 
-        #endregion Properties
-
-        #region Methods
-
         public void Activate() => State = ActivationFunction(stimulus);
 
         public void Stimulate() => stimulus = Bias + Synapses.Sum(synapse => synapse.Signal);
 
         protected abstract double ActivationFunction(double stimulus);
-
-        #endregion Methods
     }
 }

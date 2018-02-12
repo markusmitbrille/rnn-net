@@ -8,33 +8,19 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class StimulandLayer : INeuralLayer, IEnumerable<IStimuland>, IEnumerable
     {
-        #region Fields
-
         [DataMember]
         private List<IStimuland> stimulands;
 
         [DataMember]
         private int current;
 
-        #endregion Fields
-
-        #region Events
-
         public event EventHandler Completed;
-
-        #endregion Events
-
-        #region Constructors
 
         public StimulandLayer(IEnumerable<IStimuland> collection) => stimulands = new List<IStimuland>(collection);
 
         private StimulandLayer()
         {
         }
-
-        #endregion Constructors
-
-        #region Methods
 
         public void Pulse()
         {
@@ -53,7 +39,5 @@ namespace Autrage.RNN.NET
         public IEnumerator<IStimuland> GetEnumerator() => stimulands.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => stimulands.GetEnumerator();
-
-        #endregion Methods
     }
 }

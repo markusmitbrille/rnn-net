@@ -10,8 +10,6 @@ namespace ConsoleApp
 {
     internal class Program
     {
-        #region Methods
-
         private static void Main(string[] args)
         {
             Marshaller m = new Marshaller(new PrimitiveSerializer(), new StringSerializer(), new EnumSerializer(), new DelegateSerializer(), new ContractSerializer());
@@ -70,25 +68,15 @@ namespace ConsoleApp
                 WriteLine($"Deserialization: {stopwatch.ElapsedMilliseconds}ms");
             }
         }
-
-        #endregion Methods
     }
 
     internal class Person
     {
-        #region Events
-
         public event EventHandler Died;
-
-        #endregion Events
-
-        #region Methods
 
         public void Die()
         {
             Died?.Invoke(this, EventArgs.Empty);
         }
-
-        #endregion Methods
     }
 }

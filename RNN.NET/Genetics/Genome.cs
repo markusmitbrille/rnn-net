@@ -5,8 +5,6 @@ namespace Autrage.RNN.NET
 {
     internal class Genome : Collection<Chromosome>
     {
-        #region Constructors
-
         public Genome(int complexity, int size, int sensors, int muscles, int order, int connectivity, int sensitivity, int proactivity)
         {
             for (int i = 0; i < complexity; i++)
@@ -27,10 +25,6 @@ namespace Autrage.RNN.NET
         {
         }
 
-        #endregion Constructors
-
-        #region Methods
-
         public Phenotype Phenotype(NeuralNetwork network)
         {
             NetworkSkeleton skeleton = new NetworkSkeleton();
@@ -41,7 +35,5 @@ namespace Autrage.RNN.NET
 
             return skeleton.ToPhenotype();
         }
-
-        #endregion Methods
     }
 }

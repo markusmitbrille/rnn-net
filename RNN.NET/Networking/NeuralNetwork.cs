@@ -5,17 +5,11 @@ namespace Autrage.RNN.NET
     [DataContract]
     public sealed class NeuralNetwork
     {
-        #region Fields
-
         [DataMember]
         private Genome genome;
 
         [DataMember]
         private Phenotype phenotype;
-
-        #endregion Fields
-
-        #region Constructors
 
         public NeuralNetwork(int complexity, int size, int sensors, int muscles, int order, int connectivity, int sensitivity, int proactivity)
         {
@@ -33,12 +27,6 @@ namespace Autrage.RNN.NET
         {
         }
 
-        #endregion Constructors
-
-        #region Methods
-
         public void Pulse() => phenotype.Pulse();
-
-        #endregion Methods
     }
 }

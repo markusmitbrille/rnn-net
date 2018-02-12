@@ -9,17 +9,11 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class Phenotype : IEnumerable<INeuralLayer>, IEnumerable
     {
-        #region Fields
-
         [DataMember]
         private IList<INeuralLayer> layers;
 
         [DataMember]
         private int currentLayer;
-
-        #endregion Fields
-
-        #region Constructors
 
         public Phenotype(IList<INeuralLayer> layers)
         {
@@ -30,10 +24,6 @@ namespace Autrage.RNN.NET
         private Phenotype()
         {
         }
-
-        #endregion Constructors
-
-        #region Methods
 
         public IEnumerator<INeuralLayer> GetEnumerator()
         {
@@ -68,14 +58,8 @@ namespace Autrage.RNN.NET
 
         private void OnLayerCompleted(object sender, EventArgs e) => currentLayer = ++currentLayer % layers.Count;
 
-        #endregion Methods
-
-        #region Classes
-
         internal class Serializer : ReferenceTypeSerializer
         {
-            #region Methods
-
             public override bool CanHandle(Type type) => typeof(Phenotype).IsAssignableFrom(type);
 
             protected override bool SerializePayload(Stream stream, object instance)
@@ -94,10 +78,6 @@ namespace Autrage.RNN.NET
                 phenotype.AddLayerListeners();
                 return true;
             }
-
-            #endregion Methods
         }
-
-        #endregion Classes
     }
 }

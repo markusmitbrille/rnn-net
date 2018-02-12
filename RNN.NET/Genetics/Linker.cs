@@ -7,8 +7,6 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class Linker
     {
-        #region Fields
-
         [DataMember]
         private int stimuland = Rnd.Int();
 
@@ -17,10 +15,6 @@ namespace Autrage.RNN.NET
 
         [DataMember]
         private double weight = Rnd.Double();
-
-        #endregion Fields
-
-        #region Methods
 
         public void Link(IStimulator[] stimulators, IStimuland[] stimulands)
         {
@@ -31,7 +25,5 @@ namespace Autrage.RNN.NET
 
             Synapse.Link(stimulators[stimulator % stimulators.Length], stimulands[stimuland % stimulands.Length], weight);
         }
-
-        #endregion Methods
     }
 }

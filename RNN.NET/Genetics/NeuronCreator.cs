@@ -7,17 +7,11 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class NeuronCreator
     {
-        #region Fields
-
         [DataMember]
         private int type = Rnd.Int();
 
         [DataMember]
         private double bias = Rnd.Double();
-
-        #endregion Fields
-
-        #region Methods
 
         public Neuron Create()
         {
@@ -34,7 +28,5 @@ namespace Autrage.RNN.NET
                     throw new ArgumentException($"Could not get neuron from {type}!", nameof(type));
             }
         }
-
-        #endregion Methods
     }
 }

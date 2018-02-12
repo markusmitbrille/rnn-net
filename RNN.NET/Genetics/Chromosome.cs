@@ -7,8 +7,6 @@ namespace Autrage.RNN.NET
     [DataContract]
     internal class Chromosome
     {
-        #region Fields
-
         [DataMember]
         private List<NeuronCreator> neuronCreators;
 
@@ -29,10 +27,6 @@ namespace Autrage.RNN.NET
 
         [DataMember]
         private List<Linker> muscleConnectors;
-
-        #endregion Fields
-
-        #region Constructors
 
         public Chromosome(int size, int sensors, int muscles, int order, int connectivity, int sensitivity, int proactivity)
         {
@@ -79,10 +73,6 @@ namespace Autrage.RNN.NET
         private Chromosome()
         {
         }
-
-        #endregion Constructors
-
-        #region Methods
 
         public void Phenotype(NeuralNetwork network, NetworkSkeleton skeleton)
         {
@@ -146,7 +136,5 @@ namespace Autrage.RNN.NET
 
             return replica;
         }
-
-        #endregion Methods
     }
 }
