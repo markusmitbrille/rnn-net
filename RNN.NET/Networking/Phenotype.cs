@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Autrage.RNN.NET
 {
@@ -57,27 +56,5 @@ namespace Autrage.RNN.NET
         }
 
         private void OnLayerCompleted(object sender, EventArgs e) => currentLayer = ++currentLayer % layers.Count;
-
-        internal class Serializer : ReferenceTypeSerializer
-        {
-            public override bool CanHandle(Type type) => typeof(Phenotype).IsAssignableFrom(type);
-
-            protected override bool SerializePayload(Stream stream, object instance)
-            {
-                Phenotype phenotype = (Phenotype)instance;
-                Marshaller.Serialize(stream, phenotype.layers);
-                Marshaller.Serialize(stream, phenotype.currentLayer);
-                return true;
-            }
-
-            protected override bool DeserializePayload(Stream stream, object instance)
-            {
-                Phenotype phenotype = (Phenotype)instance;
-                phenotype.layers = Marshaller.Deserialize<IList<INeuralLayer>>(stream);
-                phenotype.currentLayer = Marshaller.Deserialize<int>(stream);
-                phenotype.AddLayerListeners();
-                return true;
-            }
-        }
     }
 }

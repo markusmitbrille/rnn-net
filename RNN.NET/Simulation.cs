@@ -194,10 +194,10 @@ namespace Autrage.RNN.NET
         {
             return new Serializer[]
             {
-                new Phenotype.Serializer(),
                 new PrimitiveSerializer(),
                 new EnumSerializer(),
                 new ValueTypeSerializer(),
+                new DelegateSerializer(),
                 new ListSerializer(),
                 new DictionarySerializer(),
                 new GenericCollectionSerializer(),
