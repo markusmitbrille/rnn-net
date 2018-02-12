@@ -27,6 +27,16 @@ namespace Autrage.RNN.NET
         {
         }
 
+        public static NeuralNetwork Mate(NeuralNetwork mother, NeuralNetwork father, double fidelity = 1)
+        {
+            NeuralNetwork child = new NeuralNetwork();
+            Genome genome = Genome.Mate(mother.genome, father.genome, fidelity);
+            Phenotype phenotype = genome.Phenotype(child);
+            child.genome = genome;
+            child.phenotype = genome.Phenotype(child);
+            return child;
+        }
+
         public void Pulse() => phenotype.Pulse();
     }
 }

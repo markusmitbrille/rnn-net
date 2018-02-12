@@ -14,7 +14,7 @@ namespace Autrage.RNN.NET
         private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
 
         private double cutoffPercentile;
-        private double proliferationPercentile;
+        private double replicationPercentile;
 
         public int Order { get; set; }
         public int GenomeComplexity { get; set; }
@@ -27,7 +27,7 @@ namespace Autrage.RNN.NET
         public int MaxChromosomeSensitivity { get; set; }
         public int MaxChromosomeProactivity { get; set; }
 
-        public double Fidelity { get; set; } = 1;
+        public double ReplicationFidelity { get; set; } = 1;
 
         public Func<NeuralNetwork, double> Fitness { get; set; }
 
@@ -37,14 +37,14 @@ namespace Autrage.RNN.NET
             set => cutoffPercentile = value.Clamp01();
         }
 
-        public double ProliferationPercentile
+        public double ReplicationPercentile
         {
-            get => proliferationPercentile;
-            set => proliferationPercentile = value.Clamp01();
+            get => replicationPercentile;
+            set => replicationPercentile = value.Clamp01();
         }
 
         public int CutoffCount => (int)(Count * cutoffPercentile);
-        public int ProliferationCount => (int)(Count * proliferationPercentile);
+        public int ReplicationCount => (int)(Count * replicationPercentile);
 
         public int Count => networks.Count;
 
@@ -109,9 +109,28 @@ namespace Autrage.RNN.NET
                 return;
             }
 
-            foreach (NeuralNetwork network in this.OrderByDescending(Fitness).Take(ProliferationCount).ToArray())
+            foreach (NeuralNetwork network in this.OrderByDescending(Fitness).Take(ReplicationCount).ToArray())
             {
-                Add(new NeuralNetwork(network, Fidelity));
+                Add(new NeuralNetwork(network, ReplicationFidelity));
+            }
+        }
+
+        public void Fornicate()
+        {
+            if (Fitness == null)
+            {
+                return;
+            }
+
+            List<NeuralNetwork> candidates = this.OrderByDescending(Fitness).Take(ReplicationCount).ToList();
+            while (candidates.Count > 2)
+            {
+                NeuralNetwork mother = candidates[Rnd.Int(candidates.Count)];
+                candidates.Remove(mother);
+                NeuralNetwork father = candidates[Rnd.Int(candidates.Count)];
+                candidates.Remove(father);
+
+                Add(NeuralNetwork.Mate(mother, father, ReplicationFidelity));
             }
         }
 
