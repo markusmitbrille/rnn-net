@@ -10,28 +10,19 @@ namespace ConsoleApp
 {
     internal class Program
     {
+        delegate void Move(double stimulus);
         private static void Main(string[] args)
         {
-            Marshaller m = new Marshaller(new PrimitiveSerializer(), new StringSerializer(), new EnumSerializer(), new DelegateSerializer(), new ContractSerializer());
-
-            Person p = new Person();
-            p.Died += (sender, e) => WriteLine("LERP");
-            p.Died += P_Died;
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                m.Serialize(stream, p);
-
-                stream.Reset();
-
-                Person res = m.Deserialize<Person>(stream);
-                res?.Die();
-            }
-
+            WriteLine(typeof(Program).GetMethod(nameof(P_Died)).ReturnParameter.ParameterType);
             ReadLine();
         }
 
-        private static void P_Died(object sender, EventArgs e) => WriteLine("method");
+        public static void Do(double p)
+        {
+            WriteLine(p);
+        }
+
+        public static void P_Died(object sender, EventArgs e) => WriteLine("method");
 
         private static void TestSimulation()
         {

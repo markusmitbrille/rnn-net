@@ -54,6 +54,8 @@
     <Compile Include="Genetics\MuscleCreator.cs" />
     <Compile Include="Genetics\NeuronCreator.cs" />
     <Compile Include="Genetics\SensorCreator.cs" />
+    <Compile Include="Interoperability\DelegateMuscle.cs" />
+    <Compile Include="Interoperability\DelegateSensor.cs" />
     <Compile Include="Networking\INeuralLayer.cs" />
     <Compile Include="Interoperability\MuscleAttribute.cs" />
     <Compile Include="Genetics\NetworkSkeleton.cs" />
