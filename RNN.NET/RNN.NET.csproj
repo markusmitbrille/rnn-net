@@ -48,16 +48,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Genetics\Dud.cs" />
-    <Compile Include="Genetics\Gene.cs" />
+    <Compile Include="Genetics\Chromosome.cs" />
     <Compile Include="Genetics\Genome.cs" />
+    <Compile Include="Genetics\Linker.cs" />
+    <Compile Include="Genetics\MuscleCreator.cs" />
+    <Compile Include="Genetics\NeuronCreator.cs" />
+    <Compile Include="Genetics\SensorCreator.cs" />
     <Compile Include="Networking\INeuralLayer.cs" />
-    <Compile Include="Genetics\InLinker.cs" />
     <Compile Include="Interoperability\MuscleAttribute.cs" />
     <Compile Include="Genetics\NetworkSkeleton.cs" />
-    <Compile Include="Genetics\NodeLinker.cs" />
-    <Compile Include="Genetics\OutLinker.cs" />
-    <Compile Include="Genetics\PerceptronCreator.cs" />
     <Compile Include="Interoperability\Sensor.cs" />
     <Compile Include="Networking\Phenotype.cs" />
     <Compile Include="Neurology\INeuron.cs" />
@@ -71,7 +70,6 @@
     <Compile Include="Interoperability\Muscle.cs" />
     <Compile Include="Interoperability\SensorAttribute.cs" />
     <Compile Include="Neurology\Sigmon.cs" />
-    <Compile Include="Genetics\SigmonCreator.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="Networking\StimulandLayer.cs" />
     <Compile Include="Networking\StimulatorLayer.cs" />

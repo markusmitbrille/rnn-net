@@ -1,52 +1,26 @@
-﻿using Autrage.LEX.NET;
-using System;
+﻿using Autrage.LEX.NET.Extensions;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace Autrage.RNN.NET
 {
-    internal class Genome : Collection<Gene>
+    internal class Genome : Collection<Chromosome>
     {
         #region Constructors
 
-        public Genome(int complexity)
+        public Genome(int complexity, int size, int sensors, int muscles, int order, int connectivity, int sensitivity, int proactivity)
         {
             for (int i = 0; i < complexity; i++)
             {
-                Add(Gene.Next());
+                Add(new Chromosome(Rnd.Int(size), Rnd.Int(sensors), Rnd.Int(muscles), Rnd.Int(order), Rnd.Int(connectivity), Rnd.Int(sensitivity), Rnd.Int(proactivity)));
             }
         }
 
-        public Genome(Genome other)
+        public Genome(Genome other, double fidelity = 1)
         {
-            foreach (Gene gene in other)
+            foreach (Chromosome chromosome in other)
             {
-                Add(gene.Replicate());
+                Add(new Chromosome(chromosome, fidelity));
             }
-        }
-
-        public Genome(Genome other,
-            double mutationChance = 0,
-            double complexificationChance = 0,
-            double simplificationChance = 0,
-            int maxMutations = 0,
-            int maxComplexifications = 0,
-            int maxSimplifications = 0)
-        {
-            foreach (Gene gene in other)
-            {
-                Add(gene.Replicate());
-            }
-
-            for (int i = 0; i < maxMutations; i++)
-                if (Singleton<Random>.Instance.NextDouble() < mutationChance)
-                    Mutate();
-            for (int i = 0; i < maxComplexifications; i++)
-                if (Singleton<Random>.Instance.NextDouble() < complexificationChance)
-                    Complexify();
-            for (int i = 0; i < maxSimplifications; i++)
-                if (Singleton<Random>.Instance.NextDouble() < simplificationChance)
-                    Simplify();
         }
 
         private Genome()
@@ -57,22 +31,16 @@ namespace Autrage.RNN.NET
 
         #region Methods
 
-        public NeuralNetwork Instantiate()
+        public Phenotype Phenotype(NeuralNetwork network)
         {
             NetworkSkeleton skeleton = new NetworkSkeleton();
-            foreach (Gene gene in this)
+            foreach (Chromosome chromosome in this)
             {
-                gene.ApplyTo(skeleton);
+                chromosome.Phenotype(network, skeleton);
             }
 
-            return new NeuralNetwork(this, skeleton.ToPhenotype());
+            return skeleton.ToPhenotype();
         }
-
-        private void Complexify() => Add(Gene.Next());
-
-        private void Mutate() => this[Singleton<Random>.Instance.Next(Count)].Mutate();
-
-        private void Simplify() => Remove(this.Last());
 
         #endregion Methods
     }

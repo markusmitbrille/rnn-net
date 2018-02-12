@@ -29,5 +29,14 @@ namespace Autrage.RNN.NET
         }
 
         #endregion Constructors
+
+        #region Methods
+
+        public static void Link(IStimulator stimulator, IStimuland stimuland, double weight)
+        {
+            stimuland.Synapses.Add(new Synapse(stimulator) { Weight = weight });
+        }
+
+        #endregion Methods
     }
 }

@@ -1,14 +1,9 @@
 ﻿using Autrage.LEX.NET.Extensions;
+using Autrage.LEX.NET.Serialization;
 using Autrage.RNN.NET;
-using Microsoft.CSharp;
 using System;
-using System.CodeDom.Compiler;
-using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using static System.Console;
 
 namespace ConsoleApp
@@ -19,7 +14,23 @@ namespace ConsoleApp
 
         private static void Main(string[] args)
         {
-            TestSimulation();
+            Marshaller m = new Marshaller(new PrimitiveSerializer(), new StringSerializer(), new EnumSerializer(), new DelegateSerializer(), new ContractSerializer());
+
+            Person p = new Person();
+            p.Died += (sender, e) => WriteLine("LERP");
+            p.Died += P_Died;
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                m.Serialize(stream, p);
+
+                stream.Reset();
+
+                Person res = m.Deserialize<Person>(stream);
+                res?.Die();
+            }
+
+            ReadLine();
         }
 
         private static void P_Died(object sender, EventArgs e) => WriteLine("method");
@@ -28,8 +39,15 @@ namespace ConsoleApp
         {
             Simulation simulation = new Simulation()
             {
-                Order = 100,
-                Complexity = 1000,
+                Order = 10,
+                GenomeComplexity = 20,
+                MaxChromosomeSize = 100,
+                MaxChromosomeSensors = 10,
+                MaxChromosomeMuscles = 10,
+                MaxChromosomeOrder = 500,
+                MaxChromosomeConnectivity = 200,
+                MaxChromosomeSensitivity = 20,
+                MaxChromosomeProactivity = 20,
             };
 
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -56,13 +74,21 @@ namespace ConsoleApp
         #endregion Methods
     }
 
-    class Person
+    internal class Person
     {
+        #region Events
+
         public event EventHandler Died;
 
-        private void Die()
+        #endregion Events
+
+        #region Methods
+
+        public void Die()
         {
             Died?.Invoke(this, EventArgs.Empty);
         }
+
+        #endregion Methods
     }
 }

@@ -1,6 +1,4 @@
 ﻿using Autrage.LEX.NET.Serialization;
-using System;
-using System.Linq;
 
 namespace Autrage.RNN.NET
 {
@@ -19,12 +17,16 @@ namespace Autrage.RNN.NET
 
         #region Constructors
 
-        internal NeuralNetwork(Genome genome, Phenotype phenotype)
+        public NeuralNetwork(int complexity, int size, int sensors, int muscles, int order, int connectivity, int sensitivity, int proactivity)
         {
-            this.genome = genome ?? throw new ArgumentNullException(nameof(genome));
-            this.phenotype = phenotype ?? throw new ArgumentNullException(nameof(phenotype));
+            genome = new Genome(complexity, size, sensors, muscles, order, connectivity, sensitivity, proactivity);
+            phenotype = genome.Phenotype(this);
+        }
 
-            SetBackReferences();
+        public NeuralNetwork(NeuralNetwork other, double fidelity = 1)
+        {
+            genome = new Genome(other.genome, fidelity);
+            phenotype = genome.Phenotype(this);
         }
 
         private NeuralNetwork()
@@ -35,29 +37,7 @@ namespace Autrage.RNN.NET
 
         #region Methods
 
-        public static NeuralNetwork Create(int complexity) => new Genome(complexity).Instantiate();
-
-        public NeuralNetwork Replicate() => new Genome(genome).Instantiate();
-
-        public NeuralNetwork Replicate(double mutationChance = 0, double complexificationChance = 0, double simplificationChance = 0, int maxMutations = 0, int maxComplexifications = 0, int maxSimplifications = 0)
-            => new Genome(genome, mutationChance, complexificationChance, simplificationChance, maxMutations, maxComplexifications, maxSimplifications).Instantiate();
-
         public void Pulse() => phenotype.Pulse();
-
-        private void SetBackReferences()
-        {
-            foreach (INeuralLayer layer in phenotype)
-            {
-                foreach (Muscle muscle in layer.OfType<Muscle>())
-                {
-                    muscle.Network = this;
-                }
-                foreach (Sensor sensor in layer.OfType<Sensor>())
-                {
-                    sensor.Network = this;
-                }
-            }
-        }
 
         #endregion Methods
     }

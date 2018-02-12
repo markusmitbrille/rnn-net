@@ -23,14 +23,17 @@ namespace Autrage.RNN.NET
         #region Properties
 
         public int Order { get; set; }
-        public int Complexity { get; set; }
+        public int GenomeComplexity { get; set; }
 
-        public double MutationChance { get; set; }
-        public double ComplexificationChance { get; set; }
-        public double SimplificationChance { get; set; }
-        public int MaxMutations { get; set; }
-        public int MaxComplexifications { get; set; }
-        public int MaxSimplifications { get; set; }
+        public int MaxChromosomeSize { get; set; }
+        public int MaxChromosomeSensors { get; set; }
+        public int MaxChromosomeMuscles { get; set; }
+        public int MaxChromosomeOrder { get; set; }
+        public int MaxChromosomeConnectivity { get; set; }
+        public int MaxChromosomeSensitivity { get; set; }
+        public int MaxChromosomeProactivity { get; set; }
+
+        public double Fidelity { get; set; } = 1;
 
         public Func<NeuralNetwork, double> Fitness { get; set; }
 
@@ -109,7 +112,7 @@ namespace Autrage.RNN.NET
         {
             for (int i = Count; i < Order; i++)
             {
-                Add(NeuralNetwork.Create(Complexity));
+                Add(new NeuralNetwork(GenomeComplexity, MaxChromosomeSize, MaxChromosomeSensors, MaxChromosomeMuscles, MaxChromosomeOrder, MaxChromosomeConnectivity, MaxChromosomeSensitivity, MaxChromosomeProactivity));
             }
         }
 
@@ -122,7 +125,7 @@ namespace Autrage.RNN.NET
 
             foreach (NeuralNetwork network in this.OrderByDescending(Fitness).Take(ProliferationCount).ToArray())
             {
-                Add(network.Replicate(MutationChance, ComplexificationChance, SimplificationChance, MaxMutations, MaxComplexifications, MaxSimplifications));
+                Add(new NeuralNetwork(network, Fidelity));
             }
         }
 
