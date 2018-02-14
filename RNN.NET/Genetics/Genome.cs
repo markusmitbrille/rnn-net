@@ -1,6 +1,6 @@
 ﻿using Autrage.LEX.NET.Extensions;
 using System.Collections.ObjectModel;
-using static Autrage.LEX.NET.DebugUtils;
+using static Autrage.LEX.NET.Bugger;
 
 namespace Autrage.RNN.NET
 {
