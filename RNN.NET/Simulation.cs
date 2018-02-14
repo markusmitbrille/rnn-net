@@ -3,32 +3,53 @@ using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using static Autrage.LEX.NET.DebugUtils;
 
 namespace Autrage.RNN.NET
 {
+    [DataContract]
     public class Simulation : ICollection<NeuralNetwork>
     {
+        [DataMember]
         private ICollection<NeuralNetwork> networks = new List<NeuralNetwork>();
 
+        [DataMember]
         private double cutoffPercentile;
+
+        [DataMember]
         private double replicationPercentile;
 
+        [DataMember]
         public int Order { get; set; }
+
+        [DataMember]
         public int GenomeComplexity { get; set; }
 
+        [DataMember]
         public int MaxChromosomeSize { get; set; }
+
+        [DataMember]
         public int MaxChromosomeSensors { get; set; }
+
+        [DataMember]
         public int MaxChromosomeMuscles { get; set; }
+
+        [DataMember]
         public int MaxChromosomeOrder { get; set; }
+
+        [DataMember]
         public int MaxChromosomeConnectivity { get; set; }
+
+        [DataMember]
         public int MaxChromosomeSensitivity { get; set; }
+
+        [DataMember]
         public int MaxChromosomeProactivity { get; set; }
 
+        [DataMember]
         public double ReplicationFidelity { get; set; } = 1;
 
+        [DataMember]
         public Func<NeuralNetwork, double> Fitness { get; set; }
 
         public double CutoffPercentile
@@ -61,38 +82,6 @@ namespace Autrage.RNN.NET
         public event EventHandler Clearing;
 
         public event EventHandler Cleared;
-
-        public static Simulation Deserialize(Stream stream, params Serializer[] serializers)
-        {
-            Marshaller marshaller = new Marshaller(serializers.Concat(GetDefaultSerializers()).ToArray());
-
-            if (stream.ReadInt() is int networkCount)
-            {
-                Simulation simulation = new Simulation();
-                for (int i = 0; i < networkCount; i++)
-                {
-                    simulation.Add(marshaller.Deserialize<NeuralNetwork>(stream));
-                }
-
-                return simulation;
-            }
-            else
-            {
-                Warning("Could not read simulation network count!");
-                return null;
-            }
-        }
-
-        public void Serialize(Stream stream, params Serializer[] serializers)
-        {
-            Marshaller marshaller = new Marshaller(serializers.Concat(GetDefaultSerializers()).ToArray());
-
-            stream.Write(Count);
-            foreach (NeuralNetwork network in this)
-            {
-                marshaller.Serialize(stream, network);
-            }
-        }
 
         public void Populate()
         {
@@ -189,21 +178,6 @@ namespace Autrage.RNN.NET
         IEnumerator<NeuralNetwork> IEnumerable<NeuralNetwork>.GetEnumerator() => networks.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => networks.GetEnumerator();
-
-        private static Serializer[] GetDefaultSerializers()
-        {
-            return new Serializer[]
-            {
-                new PrimitiveSerializer(),
-                new EnumSerializer(),
-                new ValueTypeSerializer(),
-                new DelegateSerializer(),
-                new ListSerializer(),
-                new DictionarySerializer(),
-                new GenericCollectionSerializer(),
-                new ContractSerializer(),
-            };
-        }
 
         public class NetworkEventArgs : EventArgs
         {
