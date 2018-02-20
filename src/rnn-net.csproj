@@ -78,12 +78,9 @@
     <Compile Include="Neurology\Synapse.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\lex-net\LEX.NET\LEX.NET.csproj">
+    <ProjectReference Include="..\..\lex-net\src\lex-net.csproj">
       <Project>{70682bb8-924b-4c36-ba96-0f7019d686d2}</Project>
-      <Name>LEX.NET</Name>
+      <Name>lex-net</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
