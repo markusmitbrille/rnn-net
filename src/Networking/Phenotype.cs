@@ -1,4 +1,5 @@
-﻿using Autrage.LEX.NET.Serialization;
+﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,9 @@ namespace Autrage.RNN.NET
 
         public Phenotype(IList<INeuralLayer> layers)
         {
-            this.layers = layers ?? throw new ArgumentNullException(nameof(layers));
+            layers.AssertNotNull();
+
+            this.layers = layers;
             AddLayerListeners();
         }
 

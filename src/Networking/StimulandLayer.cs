@@ -16,7 +16,10 @@ namespace Autrage.RNN.NET
 
         public event EventHandler Completed;
 
-        public StimulandLayer(IEnumerable<IStimuland> collection) => stimulands = new List<IStimuland>(collection);
+        public StimulandLayer(IEnumerable<IStimuland> collection)
+        {
+            stimulands = new List<IStimuland>(collection);
+        }
 
         private StimulandLayer()
         {

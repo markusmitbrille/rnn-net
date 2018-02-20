@@ -1,4 +1,5 @@
-﻿using Autrage.LEX.NET.Extensions;
+﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Extensions;
 using Autrage.LEX.NET.Serialization;
 using System;
 using System.Collections;
@@ -54,14 +55,28 @@ namespace Autrage.RNN.NET
 
         public double CutoffPercentile
         {
-            get => cutoffPercentile;
-            set => cutoffPercentile = value.Clamp01();
+            get
+            {
+                return cutoffPercentile;
+            }
+
+            set
+            {
+                cutoffPercentile = value.Clamp01();
+            }
         }
 
         public double ReplicationPercentile
         {
-            get => replicationPercentile;
-            set => replicationPercentile = value.Clamp01();
+            get
+            {
+                return replicationPercentile;
+            }
+
+            set
+            {
+                replicationPercentile = value.Clamp01();
+            }
         }
 
         public int CutoffCount => (int)(Count * cutoffPercentile);
@@ -185,7 +200,9 @@ namespace Autrage.RNN.NET
 
             public NetworkEventArgs(NeuralNetwork network)
             {
-                Network = network ?? throw new ArgumentNullException(nameof(network));
+                network.AssertNotNull();
+
+                Network = network;
             }
         }
     }

@@ -1,5 +1,5 @@
-﻿using Autrage.LEX.NET.Serialization;
-using System;
+﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Serialization;
 using System.Reflection;
 
 namespace Autrage.RNN.NET
@@ -12,9 +12,19 @@ namespace Autrage.RNN.NET
         [DataMember]
         private Move del;
 
-        public DelegateMuscle(Move del) => this.del = del ?? throw new ArgumentNullException(nameof(del));
+        public DelegateMuscle(Move del)
+        {
+            del.AssertNotNull();
 
-        public DelegateMuscle(MethodInfo method) => del = (Move)method.CreateDelegate(typeof(Move));
+            this.del = del;
+        }
+
+        public DelegateMuscle(MethodInfo method)
+        {
+            method.AssertNotNull();
+
+            del = (Move)method.CreateDelegate(typeof(Move));
+        }
 
         protected override void Move(double stimulus) => del(stimulus);
     }

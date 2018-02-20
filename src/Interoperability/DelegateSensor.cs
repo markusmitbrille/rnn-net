@@ -1,5 +1,5 @@
-﻿using Autrage.LEX.NET.Serialization;
-using System;
+﻿using Autrage.LEX.NET;
+using Autrage.LEX.NET.Serialization;
 using System.Reflection;
 
 namespace Autrage.RNN.NET
@@ -12,9 +12,19 @@ namespace Autrage.RNN.NET
         [DataMember]
         private Fetch del;
 
-        public DelegateSensor(Fetch del) => this.del = del ?? throw new ArgumentNullException(nameof(del));
+        public DelegateSensor(Fetch del)
+        {
+            del.AssertNotNull();
 
-        public DelegateSensor(MethodInfo method) => del = (Fetch)method.CreateDelegate(typeof(Fetch));
+            this.del = del;
+        }
+
+        public DelegateSensor(MethodInfo method)
+        {
+            method.AssertNotNull();
+
+            del = (Fetch)method.CreateDelegate(typeof(Fetch));
+        }
 
         protected override double Fetch() => del();
     }
