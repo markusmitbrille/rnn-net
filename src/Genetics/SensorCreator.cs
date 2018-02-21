@@ -23,7 +23,7 @@ namespace Autrage.RNN.NET
              from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
              where method.IsDefined(typeof(SensorAttribute))
              where method.ReturnParameter.ParameterType == typeof(double)
-             where !method.GetParameters().Any()
+             where method.GetParameters().None()
              select method)
             .ToArray();
 
